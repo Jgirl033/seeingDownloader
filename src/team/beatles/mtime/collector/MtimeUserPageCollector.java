@@ -35,14 +35,14 @@ public class MtimeUserPageCollector {
             String userUrl = "http://sandbox.my.mtime.com/Service/callback.mc?Ajax_CallBack=true&Ajax_CallBackType=Mtime.MemberCenter.Pages.CallbackService&Ajax_CallBackMethod=RemoteLoad&Ajax_CrossDomain=1&Ajax_RequestUrl=http://my.mtime.com/" + uid + "/&Ajax_CallBackArgument0=t&Ajax_CallBackArgument1=" + uid + "/?$2";
             WebConnect conn = new WebConnect(userUrl);
             String sourceCode = conn.downloadPage().getSourceCode();
-            Writer w = new Writer("doc/mtime/user/comment/", uid + ".txt");
+            Writer w = new Writer("doc/client/mtime/user/comment/", uid + ".txt");
             w.write(sourceCode);
 
             String profileUrl = "http://sandbox.my.mtime.com/Service/callback.mc?Ajax_CallBack=true&Ajax_CallBackType=Mtime.MemberCenter.Pages.CallbackService&Ajax_CallBackMethod=RemoteLoad&Ajax_CrossDomain=1&Ajax_RequestUrl=http://my.mtime.com/" + uid + "/profile/&Ajax_CallBackArgument0=t&Ajax_CallBackArgument1=" + uid + "/profile/?$3";
             mtimeDR.get(profileUrl);
             String profileSourceCode = mtimeDR.getPageSource();
             System.out.println(profileSourceCode);
-            Writer w2 = new Writer("doc/mtime/user/profile/", uid + ".txt");
+            Writer w2 = new Writer("doc/client/mtime/user/profile/", uid + ".txt");
             w2.write(profileSourceCode);
 
         }

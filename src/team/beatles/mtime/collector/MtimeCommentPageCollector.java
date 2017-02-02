@@ -37,14 +37,14 @@ public class MtimeCommentPageCollector {
             //获取评论的网页源代码
             String url;
             if (status == "n") {
-                filepath = "doc/mtime/comment/new/";
+                filepath = "doc/client/mtime/comment/new/";
                 if (i == 1) {
                     url = "http://movie.mtime.com/" + this.mid + "/reviews/short/new.html";
                 } else {
                     url = "http://movie.mtime.com/" + this.mid + "/reviews/short/new-" + i + ".html";
                 }
             } else {
-                filepath = "doc/mtime/comment/hot/";
+                filepath = "doc/client/mtime/comment/hot/";
                 if (i == 1) {
                     url = "http://movie.mtime.com/" + this.mid + "/reviews/short/hot.html";
                 } else {
