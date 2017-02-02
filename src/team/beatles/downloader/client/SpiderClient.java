@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import team.beatles.file.Reader;
 import team.beatles.mtime.collector.MtimeCommentPageCollector;
+import team.beatles.mtime.collector.MtimeUserPageCollector;
 
 /**
  * 网页源代码程序下载客户端，即爬行节点
@@ -64,6 +65,51 @@ public class SpiderClient {
         pw.println(msg);//写入网卡输入流,由系统调用底层函数，经网卡发送给服务器
     }
 
+    /**
+     * 发送爬取的用户源代码给服务器
+     *
+     * @param uidList 用户ID列表
+     */
+    public void sendUser(ArrayList<String> uidList) {
+        try {
+            JSONObject jsonObj = new JSONObject();
+            JSONArray jsonArrUser = new JSONArray();
+
+            MtimeUserPageCollector mupa = new MtimeUserPageCollector();
+            mupa.start(uidList);
+
+            for (String uid : uidList) {
+
+                Reader rp = new Reader("doc/client/mtime/user/profile/", uid + ".txt");
+
+                Reader rc = new Reader("doc/client/mtime/user/comment/", uid + ".txt");
+
+                try {
+                    JSONObject jsonObjUser = new JSONObject();
+                    jsonObjUser.put("uid", uid);
+                    jsonObjUser.put("profile", rp.read());
+                    jsonObjUser.put("comment", rc.read());
+                    jsonArrUser.put(jsonObjUser);
+                } catch (JSONException ex) {
+                    Logger.getLogger(SpiderClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            jsonObj.put("###users###", jsonArrUser);
+            pw.println(jsonObj.toString());
+
+        } catch (JSONException ex) {
+            Logger.getLogger(SpiderClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * 发送爬取的电影短评列表给服务器
+     *
+     * @param midList 电影的时光网ID
+     * @param startIndex 短评首页数
+     * @param endIndex 短评尾页数
+     */
     public void sendComment(ArrayList<String> midList, String startIndex, String endIndex) {
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonArrComment = new JSONArray();
@@ -107,6 +153,50 @@ public class SpiderClient {
     public String receive() throws IOException {
         String msg = br.readLine();//只接收一行信息
         return msg;
+    }
+
+    /**
+     * 接收服务器发送过来的新上架的电影ID数据
+     * @param midMsg 电影ID数据
+     * @return ArrayList 处理电影ID数据，将其转化为列表
+     * @throws IOException
+     */
+    public ArrayList<String> receiveMovie(String midMsg) throws IOException {
+
+        ArrayList<String> midList = new ArrayList<>();
+        try {
+            JSONObject json = new JSONObject(midMsg);
+            JSONArray jsonArrMovie = json.getJSONArray("###movies###");
+            for (int i = 0; i < jsonArrMovie.length(); i++) {
+                midList.add(jsonArrMovie.getJSONObject(i).getString("mid"));
+            }
+        } catch (JSONException ex) {
+            Logger.getLogger(SpiderClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return midList;
+
+    }
+
+    /**
+     * 接收服务器发送过来的新生成的用户ID数据
+     * @param uidMsg 用户ID数据
+     * @return ArrayList 处理用户ID数据，将其转化为列表
+     * @throws IOException
+     */
+    public ArrayList<String> receiveUser(String uidMsg) throws IOException {
+
+        ArrayList<String> uidList = new ArrayList<>();
+        try {
+            JSONObject json = new JSONObject(uidMsg);
+            JSONArray jsonArrMovie = json.getJSONArray("###users###");
+            for (int i = 0; i < jsonArrMovie.length(); i++) {
+                uidList.add(jsonArrMovie.getJSONObject(i).getString("uid"));
+            }
+        } catch (JSONException ex) {
+            Logger.getLogger(SpiderClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return uidList;
+
     }
 
     /**
