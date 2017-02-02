@@ -119,8 +119,11 @@ public class SpiderServer implements Runnable {
      * 接收客户端发送过来的短评源代码
      *
      * @param commentMsg 短评源代码
+     * @return ArrayList 从评论中提取的用户ID列表
      */
-    public void receiveComment(String commentMsg) {
+    public ArrayList<String> receiveComment(String commentMsg) {
+        
+        ArrayList<String> uidList = new ArrayList<>();
         try {
             JSONObject json = new JSONObject(commentMsg);
             JSONArray jsonArr = json.getJSONArray("###comments###");
@@ -128,7 +131,6 @@ public class SpiderServer implements Runnable {
             String filepathHot = "doc/server/mtime/comment/hot/";
             String filepathNew = "doc/server/mtime/comment/new/";
 
-            ArrayList<String> uidList = new ArrayList<>();
             for (int i = 0; i < jsonArr.length(); i++) {
                 String mid = jsonArr.getJSONObject(i).getString("mid");
                 String hotComment = jsonArr.getJSONObject(i).getString("hot_comment");
@@ -151,11 +153,11 @@ public class SpiderServer implements Runnable {
                     uidList.add(comment.getMtimeCommentPK().getUid());
                 }
             }
-            this.sendUser(uidList);
 
         } catch (JSONException ex) {
             Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return uidList;
     }
 
     /**
@@ -228,7 +230,8 @@ public class SpiderServer implements Runnable {
                 } else if (msg.contains("###comments###".subSequence(0, 10))) {
                     //控制节点向爬行节点发送电影短评，以comments为信号量
                     System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "传来电影短评的源代码！");
-                    this.receiveComment(msg);
+                    ArrayList<String> uidList = this.receiveComment(msg);
+                    this.sendUser(uidList);
                 }
             }
         } catch (IOException e) {
