@@ -14,6 +14,7 @@ import static team.beatles.constant.Constant.mtimeDR;
 
 /**
  * 爬行节点窗体程序
+ *
  * @author admin Jgirl
  */
 public class SpiderClientJFrame extends javax.swing.JFrame {
@@ -236,13 +237,19 @@ public class SpiderClientJFrame extends javax.swing.JFrame {
                     try {
                         msg = client.receive();//阻塞语句
                         if (msg != null) {
-                            if (msg.contains("###movies###".subSequence(0, 7))) {
+                            if (msg.contains("###movies###".subSequence(0, 11))) {
                                 jTextShow.append("Please download the pages of these movies' comments\n");
                                 ArrayList<String> midList = client.receiveMovie(msg);
+                                for (String mid : midList) {
+                                    jTextShow.append(mid + "\n");
+                                }
                                 client.sendComment(midList, firstCommentIndex, lastCommentIndex);
-                            } else if (msg.contains("###users###".subSequence(0, 8))) {
+                            } else if (msg.contains("###users###".subSequence(0, 10))) {
                                 jTextShow.append("Please download the pages of these users' comments\n");
                                 ArrayList<String> uidList = client.receiveUser(msg);
+                                for (String uid : uidList) {
+                                    jTextShow.append(uid + "\n");
+                                }
                                 client.sendUser(uidList);
                             }
                         } else {
@@ -289,7 +296,7 @@ public class SpiderClientJFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        
+
         //</editor-fold>
         //</editor-fold>
 
