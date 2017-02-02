@@ -142,9 +142,11 @@ public class SpiderServer implements Runnable {
                 Writer wn = new Writer(filepathNew, mid + ".txt");
                 wn.write(newComment, true);
 
-                MtimeCommentSpider mcs = new MtimeCommentSpider(mid);
-                ArrayList<MtimeComment> hotCommentList = mcs.getComment("h");
-                ArrayList<MtimeComment> newCommentList = mcs.getComment("n");
+                MtimeCommentSpider mcsh = new MtimeCommentSpider(mid, "h", hotComment);
+                MtimeCommentSpider mcsn = new MtimeCommentSpider(mid, "n", newComment);
+
+                ArrayList<MtimeComment> hotCommentList = mcsh.getComment();
+                ArrayList<MtimeComment> newCommentList = mcsn.getComment();
                 ArrayList<MtimeComment> commentList = new ArrayList<>();
                 commentList.addAll(newCommentList);
                 commentList.addAll(hotCommentList);
@@ -152,8 +154,9 @@ public class SpiderServer implements Runnable {
                 MtimeDBCheck dbc = new MtimeDBCheck();
                 for (MtimeComment comment : commentList) {
                     String uid = comment.getMtimeCommentPK().getUid();
-                    if(dbc.isUserExist(uid))
+                    if (!dbc.isUserExist(uid)) {
                         uidList.add(uid);
+                    }
                 }
             }
 
@@ -162,7 +165,7 @@ public class SpiderServer implements Runnable {
         }
         return uidList;
     }
-    
+
     /**
      * 接收客户端发送过来的用户源代码
      *
@@ -196,7 +199,6 @@ public class SpiderServer implements Runnable {
         }
         return uidList;
     }
-    
 
     /**
      * 使用"电影"关键字在百度上进行搜索，对其返回网页进行解析，获取新上架的电影名称列表
@@ -265,12 +267,13 @@ public class SpiderServer implements Runnable {
                     //控制节点向爬行节点发送电影ID，以movies为信号量
                     System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "请求新上架的电影ID！");
                     this.sendMovie(movieIDUnfinishedList);
-                } else if (msg.contains("###comments###".subSequence(0, 10))) {
+                } else if (msg.contains("###comments###".subSequence(0, 13))) {
                     //控制节点向爬行节点发送电影短评，以comments为信号量
                     System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "传来电影短评的源代码！");
                     ArrayList<String> uidList = this.receiveComment(msg);
                     this.sendUser(uidList);
-                }else if(msg.contains("###users###".subSequence(0, 8))){
+                } else if (msg.contains("###users###".subSequence(0, 10))) {
+                    System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "传来新用户的源代码！");
                     this.receiveUser(msg);
                 }
             }
