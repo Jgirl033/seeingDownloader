@@ -237,16 +237,13 @@ public class SpiderClientJFrame extends javax.swing.JFrame {
                         msg = client.receive();//阻塞语句
                         if (msg != null) {
                             if (msg.contains("###movies###".subSequence(0, 7))) {
-
                                 jTextShow.append("Please download the pages of these movies' comments\n");
                                 ArrayList<String> midList = client.receiveMovie(msg);
                                 client.sendComment(midList, firstCommentIndex, lastCommentIndex);
-                            } else if (msg.contains("users".subSequence(0, 4))) {
-
+                            } else if (msg.contains("###users###".subSequence(0, 8))) {
                                 jTextShow.append("Please download the pages of these users' comments\n");
                                 ArrayList<String> uidList = client.receiveUser(msg);
                                 client.sendUser(uidList);
-
                             }
                         } else {
                             jTextShow.append("对话已关闭！\n");
@@ -254,7 +251,6 @@ public class SpiderClientJFrame extends javax.swing.JFrame {
                         }
                     } catch (IOException ex) {
                     }
-
                 }
             }
         };
