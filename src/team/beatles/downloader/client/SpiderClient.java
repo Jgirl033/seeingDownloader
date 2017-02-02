@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import team.beatles.file.Reader;
+import team.beatles.downloader.file.Reader;
 import team.beatles.mtime.collector.MtimeCommentPageCollector;
 import team.beatles.mtime.collector.MtimeUserPageCollector;
 

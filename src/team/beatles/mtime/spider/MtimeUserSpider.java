@@ -8,7 +8,7 @@ package team.beatles.mtime.spider;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import team.beatles.file.Reader;
+import team.beatles.downloader.file.Reader;
 import team.beatles.mtime.entity.MtimeUser;
 
 /**

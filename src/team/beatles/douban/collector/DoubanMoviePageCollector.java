@@ -5,9 +5,9 @@
  */
 package team.beatles.douban.collector;
 
-import team.beatles.file.Writer;
-import team.beatles.web.WebConnect;
-import team.beatles.web.WebPage;
+import team.beatles.downloader.file.Writer;
+import team.beatles.downloader.web.WebConnect;
+import team.beatles.downloader.web.WebPage;
 
 /**
  * 豆瓣电影主页源代码下载类
@@ -26,7 +26,7 @@ public class DoubanMoviePageCollector {
     }
 
     /**
-     *
+     * 启动豆瓣电影网页源代码下载程序，对本地存储的电影信息源代码文本进行解析
      */
     public void start() {
 

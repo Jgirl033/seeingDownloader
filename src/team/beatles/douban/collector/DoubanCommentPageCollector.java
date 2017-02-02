@@ -7,7 +7,7 @@ package team.beatles.douban.collector;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import team.beatles.file.Writer;
+import team.beatles.downloader.file.Writer;
 import static team.beatles.constant.Constant.doubanDR;
 
 /**

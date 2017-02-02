@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import team.beatles.douban.entity.DoubanComment;
 import team.beatles.douban.entity.DoubanCommentPK;
-import team.beatles.file.Reader;
+import team.beatles.downloader.file.Reader;
 
 /**
  * 豆瓣电影短评源代码解析类

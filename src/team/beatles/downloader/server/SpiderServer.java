@@ -22,11 +22,11 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import team.beatles.file.Writer;
+import team.beatles.downloader.file.Writer;
 import team.beatles.mtime.entity.MtimeComment;
 import team.beatles.mtime.spider.MtimeCommentSpider;
 import team.beatles.mtime.util.MtimeDBCheck;
-import team.beatles.web.WebConnect;
+import team.beatles.downloader.web.WebConnect;
 
 /**
  * 获取新上架的电影名称以及对应的豆瓣ID和时光网ID，即控制节点

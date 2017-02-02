@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import team.beatles.douban.entity.DoubanCollect;
 import team.beatles.douban.entity.DoubanWish;
-import team.beatles.file.Reader;
+import team.beatles.downloader.file.Reader;
 
 /**
  * 解析豆瓣用户主页源代码，获取用户基本信息

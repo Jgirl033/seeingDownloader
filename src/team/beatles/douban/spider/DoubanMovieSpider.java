@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import team.beatles.douban.entity.DoubanMovie;
-import team.beatles.file.Reader;
-import team.beatles.web.WebConnect;
-import team.beatles.web.WebPage;
+import team.beatles.downloader.file.Reader;
+import team.beatles.downloader.web.WebConnect;
+import team.beatles.downloader.web.WebPage;
 
 /**
  * 爬取豆瓣电影基本信息并提供通过类中的方法能够获取电影相关文件的本地存储路径

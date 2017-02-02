@@ -5,8 +5,8 @@
  */
 package team.beatles.mtime.collector;
 
-import team.beatles.file.Writer;
-import team.beatles.web.WebConnect;
+import team.beatles.downloader.file.Writer;
+import team.beatles.downloader.web.WebConnect;
 
 /**
  * 时光网电影主页源代码下载类

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package team.beatles.web;
+package team.beatles.downloader.web;
 
 /**
  * 网页实体类

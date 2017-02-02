@@ -6,8 +6,8 @@
 package team.beatles.mtime.collector;
 
 import java.util.ArrayList;
-import team.beatles.file.Writer;
-import team.beatles.web.WebConnect;
+import team.beatles.downloader.file.Writer;
+import team.beatles.downloader.web.WebConnect;
 import static team.beatles.constant.Constant.mtimeDR;
 
 /**
