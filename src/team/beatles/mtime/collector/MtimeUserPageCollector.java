@@ -12,6 +12,7 @@ import static team.beatles.constant.Constant.mtimeDR;
 
 /**
  * 时光网用户主页源代码下载类
+ *
  * @author admin Jgirl
  */
 public class MtimeUserPageCollector {
@@ -25,6 +26,7 @@ public class MtimeUserPageCollector {
 
     /**
      * 启动时光网用户主页源代码下载程序，下载内容包括用户基本信息以及短评信息
+     *
      * @param uidList 用户ID列表
      */
     public void start(ArrayList<String> uidList) {
