@@ -22,18 +22,18 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import team.beatles.douban.entity.DoubanComment;
+import team.beatles.douban.spider.DoubanCommentSpider;
+import team.beatles.douban.util.DoubanDBCheck;
 import team.beatles.downloader.file.Writer;
-import team.beatles.mtime.entity.MtimeComment;
-import team.beatles.mtime.spider.MtimeCommentSpider;
-import team.beatles.mtime.util.MtimeDBCheck;
 import team.beatles.downloader.web.WebConnect;
 
 /**
- * 获取新上架的电影名称以及对应的豆瓣ID和时光网ID，即控制节点
+ * 获取新上架的电影名称以及对应的豆瓣ID和，即控制节点
  *
  * @author admin Jgirl
  */
-public class SpiderServer implements Runnable {
+public class DoubanSpiderServer implements Runnable {
 
     private final Socket socket;
 
@@ -46,7 +46,7 @@ public class SpiderServer implements Runnable {
      * @param socket 与客户端连接的socket
      * @throws IOException
      */
-    public SpiderServer(Socket socket) throws IOException {
+    public DoubanSpiderServer(Socket socket) throws IOException {
 
         this.socket = socket;
 
@@ -75,7 +75,7 @@ public class SpiderServer implements Runnable {
                     jsonObjMovie.put("mid", mid);
                     jsonArrMovie.put(jsonObjMovie);
                 } catch (JSONException ex) {
-                    Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DoubanSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -83,7 +83,7 @@ public class SpiderServer implements Runnable {
             pw.println(jsonObj.toString());
 
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoubanSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -103,7 +103,7 @@ public class SpiderServer implements Runnable {
                     jsonObjUser.put("uid", uid);
                     jsonArrUser.put(jsonObjUser);
                 } catch (JSONException ex) {
-                    Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DoubanSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -111,7 +111,7 @@ public class SpiderServer implements Runnable {
             pw.println(jsonObj.toString());
 
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoubanSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -128,32 +128,22 @@ public class SpiderServer implements Runnable {
             JSONObject json = new JSONObject(commentMsg);
             JSONArray jsonArr = json.getJSONArray("###comments###");
 
-            String filepathHot = "doc/server/mtime/comment/hot/";
-            String filepathNew = "doc/server/mtime/comment/new/";
+            String filepath = "doc/server/douban/comment/";
 
             for (int i = 0; i < jsonArr.length(); i++) {
                 String mid = jsonArr.getJSONObject(i).getString("mid");
-                String hotComment = jsonArr.getJSONObject(i).getString("hot_comment");
-                String newComment = jsonArr.getJSONObject(i).getString("new_comment");
+                String commentSourceCode = jsonArr.getJSONObject(i).getString("comment");
 
-                Writer wh = new Writer(filepathHot, mid + ".txt");
-                wh.write(hotComment, true);
+                Writer wh = new Writer(filepath, mid + ".txt");
+                wh.write(commentSourceCode, true);
 
-                Writer wn = new Writer(filepathNew, mid + ".txt");
-                wn.write(newComment, true);
+                DoubanCommentSpider mcsh = new DoubanCommentSpider(mid, commentSourceCode);
 
-                MtimeCommentSpider mcsh = new MtimeCommentSpider(mid, "h", hotComment);
-                MtimeCommentSpider mcsn = new MtimeCommentSpider(mid, "n", newComment);
+                ArrayList<DoubanComment> commentList = mcsh.getComment("P");
 
-                ArrayList<MtimeComment> hotCommentList = mcsh.getComment();
-                ArrayList<MtimeComment> newCommentList = mcsn.getComment();
-                ArrayList<MtimeComment> commentList = new ArrayList<>();
-                commentList.addAll(newCommentList);
-                commentList.addAll(hotCommentList);
-
-                MtimeDBCheck dbc = new MtimeDBCheck();
-                for (MtimeComment comment : commentList) {
-                    String uid = comment.getMtimeCommentPK().getUid();
+                DoubanDBCheck dbc = new DoubanDBCheck();
+                for (DoubanComment comment : commentList) {
+                    String uid = comment.getDoubanCommentPK().getUid();
                     if (!dbc.isUserExist(uid)) {
                         uidList.add(uid);
                     }
@@ -161,7 +151,7 @@ public class SpiderServer implements Runnable {
             }
 
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoubanSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return uidList;
     }
@@ -179,23 +169,18 @@ public class SpiderServer implements Runnable {
             JSONObject json = new JSONObject(userMsg);
             JSONArray jsonArr = json.getJSONArray("###users###");
 
-            String filepathProfile = "doc/server/mtime/user/profile/";
-            String filepathComment = "doc/server/mtime/user/comment/";
+            String filepath = "doc/server/douban/user/";
 
             for (int i = 0; i < jsonArr.length(); i++) {
                 String uid = jsonArr.getJSONObject(i).getString("uid");
-                String profile = jsonArr.getJSONObject(i).getString("profile");
-                String comment = jsonArr.getJSONObject(i).getString("comment");
+                String profile = jsonArr.getJSONObject(i).getString("information");
 
-                Writer wh = new Writer(filepathProfile, uid + ".txt");
+                Writer wh = new Writer(filepath, uid + ".txt");
                 wh.write(profile, true);
-
-                Writer wn = new Writer(filepathComment, uid + ".txt");
-                wn.write(comment, true);
             }
 
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoubanSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return uidList;
     }
@@ -219,15 +204,14 @@ public class SpiderServer implements Runnable {
     }
 
     /**
-     * 将新上架的电影名称在时光网上遍历检索，获取其对应的ID
+     * 将新上架的电影名称在豆瓣网上遍历检索，获取其对应的ID
      *
      * @return List 新上架的电影的时光网ID列表
      */
-    public static List<String> getMtimeMovieID() {
+    public static List<String> getMovieID() {
         List<String> movieIDUnfinishedList = new ArrayList<>();
         List<String> movieUnfinishedList = getMovieName();
         for (String movie : movieUnfinishedList) {
-
             StringBuilder string = new StringBuilder();
             String[] hex = movie.split("\\\\u");
             for (int i = 1; i < hex.length; i++) {
@@ -237,11 +221,11 @@ public class SpiderServer implements Runnable {
                 string.append((char) data);
             }
 
-            String url = "http://service.channel.mtime.com/Search.api?Ajax_CallBack=true&Ajax_CallBackType=Mtime.Channel.Services&Ajax_CallBackMethod=GetSearchResult&Ajax_CrossDomain=1&Ajax_RequestUrl=http://search.mtime.com/search/?q=" + string + "&t=0&Ajax_CallBackArgument0=" + string + "&Ajax_CallBackArgument1=0&Ajax_CallBackArgument2=290&Ajax_CallBackArgument3=0&Ajax_CallBackArgument4=1";
-            Pattern pattern = Pattern.compile("\"movieId\":(.*?),\"movieTitle\":");
+            String url = "https://movie.douban.com/subject_search?search_text=" + string + "&cat=1002";
+            Pattern pattern = Pattern.compile("<a class=\"nbg\" href=\".*?\" onclick=\".*?subject_id:'(.*?)'.*?\" title=\".*?\">.*?<img src=\".*?\" alt=\".*?\" class=\"\"/>.*?</a>");
             WebConnect conn = new WebConnect(url);
             Matcher matcher = pattern.matcher(conn.downloadPage().getSourceCode());
-            MtimeDBCheck dbc = new MtimeDBCheck();
+            DoubanDBCheck dbc = new DoubanDBCheck();
             if (matcher.find() && !dbc.isMovieExist(matcher.group(1).trim())) {
                 movieIDUnfinishedList.add(matcher.group(1).trim());
             }
@@ -251,7 +235,7 @@ public class SpiderServer implements Runnable {
 
     @Override
     public void run() {
-        List<String> movieIDUnfinishedList = SpiderServer.getMtimeMovieID();
+        List<String> movieIDUnfinishedList = DoubanSpiderServer.getMovieID();
         try {
             String msg = null;
             while ((msg = br.readLine()) != null) {

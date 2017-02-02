@@ -19,16 +19,16 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import team.beatles.douban.collector.DoubanCommentPageCollector;
+import team.beatles.douban.collector.DoubanUserPageCollector;
 import team.beatles.downloader.file.Reader;
-import team.beatles.mtime.collector.MtimeCommentPageCollector;
-import team.beatles.mtime.collector.MtimeUserPageCollector;
 
 /**
  * 网页源代码程序下载客户端，即爬行节点
  *
  * @author admin Jgirl
  */
-public class SpiderClient {
+public class DoubanSpiderClient {
 
     Socket client;
     PrintWriter pw;//用来写
@@ -41,7 +41,7 @@ public class SpiderClient {
      * @param port 服务器服务端口号
      * @throws IOException
      */
-    public SpiderClient(String ip, String port) throws IOException {
+    public DoubanSpiderClient(String ip, String port) throws IOException {
         client = new Socket(ip, Integer.parseInt(port));
         //主动向服务器发起连接,实现TCP中三次握手的过程。
         //若不成功(网络问题,地址错误,服务器资源紧张等),抛出错误，其错误信息交由调用者处理。
@@ -75,23 +75,20 @@ public class SpiderClient {
             JSONObject jsonObj = new JSONObject();
             JSONArray jsonArrUser = new JSONArray();
 
-            MtimeUserPageCollector mupa = new MtimeUserPageCollector();
+            DoubanUserPageCollector mupa = new DoubanUserPageCollector();
             mupa.start(uidList);
 
             for (String uid : uidList) {
 
-                Reader rp = new Reader("doc/client/mtime/user/profile/", uid + ".txt");
-
-                Reader rc = new Reader("doc/client/mtime/user/comment/", uid + ".txt");
+                Reader rp = new Reader("doc/client/douban/user/", uid + ".txt");
 
                 try {
                     JSONObject jsonObjUser = new JSONObject();
                     jsonObjUser.put("uid", uid);
-                    jsonObjUser.put("profile", rp.read());
-                    jsonObjUser.put("comment", rc.read());
+                    jsonObjUser.put("information", rp.read());
                     jsonArrUser.put(jsonObjUser);
                 } catch (JSONException ex) {
-                    Logger.getLogger(SpiderClient.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DoubanSpiderClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -99,7 +96,7 @@ public class SpiderClient {
             pw.println(jsonObj.toString());
 
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoubanSpiderClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -115,31 +112,28 @@ public class SpiderClient {
         JSONArray jsonArrComment = new JSONArray();
 
         for (String mid : midList) {
-            MtimeCommentPageCollector mcpc = new MtimeCommentPageCollector(mid);
-            mcpc.start("h", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
-            mcpc.start("n", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
+            DoubanCommentPageCollector mcpc = new DoubanCommentPageCollector(mid);
+            mcpc.start("P", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
 
             JSONObject jsonObjComment = new JSONObject();
 
             try {
-                Reader rh = new Reader("doc/client/mtime/comment/hot/", mid + ".txt");
-                Reader rn = new Reader("doc/client/mtime/comment/new/", mid + ".txt");
+                Reader rh = new Reader("doc/client/douban/comment/", mid + ".txt");
 
                 jsonObjComment.put("mid", mid);
-                jsonObjComment.put("hot_comment", rh.read());
-                jsonObjComment.put("new_comment", rn.read());
+                jsonObjComment.put("comment", rh.read());
 
                 jsonArrComment.put(jsonObjComment);
 
             } catch (JSONException ex) {
-                Logger.getLogger(SpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MtimeSpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
         try {
             jsonObj.put("###comments###", jsonArrComment);//再将这个json格式的的数组放到最终的json对象中。
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MtimeSpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         pw.println(jsonObj.toString());
     }
@@ -157,6 +151,7 @@ public class SpiderClient {
 
     /**
      * 接收服务器发送过来的新上架的电影ID数据
+     *
      * @param midMsg 电影ID数据
      * @return ArrayList 处理电影ID数据，将其转化为列表
      * @throws IOException
@@ -171,7 +166,7 @@ public class SpiderClient {
                 midList.add(jsonArrMovie.getJSONObject(i).getString("mid"));
             }
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoubanSpiderClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         return midList;
 
@@ -179,6 +174,7 @@ public class SpiderClient {
 
     /**
      * 接收服务器发送过来的新生成的用户ID数据
+     *
      * @param uidMsg 用户ID数据
      * @return ArrayList 处理用户ID数据，将其转化为列表
      * @throws IOException
@@ -193,7 +189,7 @@ public class SpiderClient {
                 uidList.add(jsonArrMovie.getJSONObject(i).getString("uid"));
             }
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoubanSpiderClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         return uidList;
 

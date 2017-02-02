@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * 多线程服务器，用于服务多个客户端
  * @author admin Jgirl
  */
-public class SpiderThreadServer {
+public class DoubanSpiderThreadServer {
 
     private final int port = 8181;
     private final ServerSocket server;
@@ -29,7 +29,7 @@ public class SpiderThreadServer {
      *
      * @throws IOException
      */
-    public SpiderThreadServer() throws IOException {
+    public DoubanSpiderThreadServer() throws IOException {
         server = new ServerSocket(this.port);//开启8181端口，初始化服务器,服务器端只需要端口参数      
         //创建线程池
         //Runtime的availableProcessors()方法返回当前系统的CPU的数目
@@ -48,9 +48,9 @@ public class SpiderThreadServer {
             try {
                 //服务器处于长期开启状态
                 socket = server.accept();//等待客户端请求连接，如果有连接即生成一个套接字
-                executorService.execute(new SpiderServer(socket));//接受一个客户请求,从线程池中拿出一个线程专门处理该客户
+                executorService.execute(new DoubanSpiderServer(socket));//接受一个客户请求,从线程池中拿出一个线程专门处理该客户
             } catch (IOException ex) {
-                Logger.getLogger(SpiderThreadServer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DoubanSpiderThreadServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -61,6 +61,6 @@ public class SpiderThreadServer {
      * @throws IOException
      */
     public static void main(String arg[]) throws IOException {
-        new SpiderThreadServer().service();
+        new DoubanSpiderThreadServer().service();
     }
 }

@@ -9,24 +9,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import team.beatles.mtime.spider.MtimeLogin;
 import static team.beatles.constant.Constant.mtimeDR;
+import team.beatles.douban.spider.DoubanLogin;
 
 /**
  * 爬行节点窗体程序
  *
  * @author admin Jgirl
  */
-public class SpiderClientJFrame extends javax.swing.JFrame {
+public class DoubanSpiderClientJFrame extends javax.swing.JFrame {
 
-    SpiderClient client;
+    DoubanSpiderClient client;
 
     /**
      * Creates new form MainJFrame
      */
-    public SpiderClientJFrame() {
+    public DoubanSpiderClientJFrame() {
         initComponents();
-        mtimeDR = MtimeLogin.getWebDriver();
+        mtimeDR = DoubanLogin.getWebDriver();
     }
 
     /**
@@ -198,7 +198,7 @@ public class SpiderClientJFrame extends javax.swing.JFrame {
         String ip = jTextIP.getText();
         String port = jTextPort.getText();
         try {
-            client = new SpiderClient(ip, port);
+            client = new DoubanSpiderClient(ip, port);
             client.send("Hello, I am " + ip);
             String msg = client.receive();
             if (msg != null) {
@@ -207,7 +207,7 @@ public class SpiderClientJFrame extends javax.swing.JFrame {
                 jTextShow.append("服务器连接失败！\n");
             }
         } catch (IOException ex) {
-            Logger.getLogger(SpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoubanSpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnConnectActionPerformed
 
@@ -218,7 +218,7 @@ public class SpiderClientJFrame extends javax.swing.JFrame {
             client.close();
             System.exit(0);
         } catch (IOException ex) {
-            Logger.getLogger(SpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoubanSpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnExitActionPerformed
 
@@ -292,8 +292,38 @@ public class SpiderClientJFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SpiderClientJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DoubanSpiderClientJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
@@ -304,7 +334,7 @@ public class SpiderClientJFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new SpiderClientJFrame().setVisible(true);
+                new DoubanSpiderClientJFrame().setVisible(true);
             }
         });
     }
