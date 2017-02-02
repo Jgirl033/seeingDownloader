@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static team.beatles.constant.Constant.mtimeDR;
+import static team.beatles.constant.Constant.doubanDR;
 import team.beatles.douban.spider.DoubanLogin;
 
 /**
@@ -26,7 +26,7 @@ public class DoubanSpiderClientJFrame extends javax.swing.JFrame {
      */
     public DoubanSpiderClientJFrame() {
         initComponents();
-        mtimeDR = DoubanLogin.getWebDriver();
+        doubanDR = DoubanLogin.getWebDriver();
     }
 
     /**
