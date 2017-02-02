@@ -5,10 +5,26 @@
  */
 package team.beatles.downloader.server;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import team.beatles.file.Writer;
+import team.beatles.mtime.entity.MtimeComment;
+import team.beatles.mtime.spider.MtimeCommentSpider;
 import team.beatles.mtime.util.MtimeDBCheck;
 import team.beatles.web.WebConnect;
 
@@ -17,7 +33,130 @@ import team.beatles.web.WebConnect;
  *
  * @author admin Jgirl
  */
-public class SpiderServer {
+public class SpiderServer implements Runnable {
+
+    private final Socket socket;
+
+    private final PrintWriter pw;//用来写
+    private final BufferedReader br;//用来读
+
+    /**
+     * 构造一个新的SpiderServer()
+     *
+     * @param socket 与客户端连接的socket
+     * @throws IOException
+     */
+    public SpiderServer(Socket socket) throws IOException {
+
+        this.socket = socket;
+
+        OutputStream socketOut = socket.getOutputStream();
+        pw = new PrintWriter(new OutputStreamWriter(socketOut, "utf-8"), true);
+        //得到网络输出字节流地址,并装饰成网络输出字符流
+
+        InputStream socketIn = socket.getInputStream();
+        br = new BufferedReader(new InputStreamReader(socketIn, "utf-8"));
+        //得到网络输入字节流地址,并装饰成网络输入字符流
+    }
+
+    /**
+     * 向客户端发送新上架的电影ID列表
+     *
+     * @param movieIDUnfinishedList 新上架的电影ID列表
+     */
+    public void sendMovie(List<String> movieIDUnfinishedList) {
+        try {
+            JSONObject jsonObj = new JSONObject();
+            JSONArray jsonArrMovie = new JSONArray();
+
+            for (String mid : movieIDUnfinishedList) {
+                try {
+                    JSONObject jsonObjMovie = new JSONObject();
+                    jsonObjMovie.put("mid", mid);
+                    jsonArrMovie.put(jsonObjMovie);
+                } catch (JSONException ex) {
+                    Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            jsonObj.put("###movies###", jsonArrMovie);
+            pw.println(jsonObj.toString());
+
+        } catch (JSONException ex) {
+            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * 向客户端发送新的用户ID列表
+     *
+     * @param uidList 用户ID列表
+     */
+    public void sendUser(ArrayList<String> uidList) {
+        try {
+            JSONObject jsonObj = new JSONObject();
+            JSONArray jsonArrUser = new JSONArray();
+
+            for (String uid : uidList) {
+                try {
+                    JSONObject jsonObjUser = new JSONObject();
+                    jsonObjUser.put("uid", uid);
+                    jsonArrUser.put(jsonObjUser);
+                } catch (JSONException ex) {
+                    Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            jsonObj.put("###users###", jsonArrUser);
+            pw.println(jsonObj.toString());
+
+        } catch (JSONException ex) {
+            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * 接收客户端发送过来的短评源代码
+     *
+     * @param commentMsg 短评源代码
+     */
+    public void receiveComment(String commentMsg) {
+        try {
+            JSONObject json = new JSONObject(commentMsg);
+            JSONArray jsonArr = json.getJSONArray("###comments###");
+
+            String filepathHot = "doc/server/mtime/comment/hot/";
+            String filepathNew = "doc/server/mtime/comment/new/";
+
+            ArrayList<String> uidList = new ArrayList<>();
+            for (int i = 0; i < jsonArr.length(); i++) {
+                String mid = jsonArr.getJSONObject(i).getString("mid");
+                String hotComment = jsonArr.getJSONObject(i).getString("hot_comment");
+                String newComment = jsonArr.getJSONObject(i).getString("new_comment");
+
+                Writer wh = new Writer(filepathHot, mid + ".txt");
+                wh.write(hotComment, true);
+
+                Writer wn = new Writer(filepathNew, mid + ".txt");
+                wn.write(newComment, true);
+
+                MtimeCommentSpider mcs = new MtimeCommentSpider(mid);
+                ArrayList<MtimeComment> hotCommentList = mcs.getComment("h");
+                ArrayList<MtimeComment> newCommentList = mcs.getComment("n");
+                ArrayList<MtimeComment> commentList = new ArrayList<>();
+                commentList.addAll(newCommentList);
+                commentList.addAll(hotCommentList);
+
+                for (MtimeComment comment : commentList) {
+                    uidList.add(comment.getMtimeCommentPK().getUid());
+                }
+            }
+            this.sendUser(uidList);
+
+        } catch (JSONException ex) {
+            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * 使用"电影"关键字在百度上进行搜索，对其返回网页进行解析，获取新上架的电影名称列表
@@ -39,6 +178,7 @@ public class SpiderServer {
 
     /**
      * 将新上架的电影名称在时光网上遍历检索，获取其对应的ID
+     *
      * @return List 新上架的电影的时光网ID列表
      */
     public static List<String> getMtimeMovieID() {
@@ -65,5 +205,40 @@ public class SpiderServer {
             }
         }
         return movieIDUnfinishedList;
+    }
+
+    @Override
+    public void run() {
+        List<String> movieIDUnfinishedList = SpiderServer.getMtimeMovieID();
+        try {
+            String msg = null;
+            while ((msg = br.readLine()) != null) {
+                if (msg.contains("Hello".subSequence(0, 4))) {
+                    System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "注册上线！");
+                    pw.println("success");
+                } else if (msg.contains("###Bye###".subSequence(0, 8))) {
+                    //爬行节点请求退出
+                    System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "退出成功！");
+                    socket.close();
+                    break;
+                } else if (msg.contains("###movies###".subSequence(0, 11))) {
+                    //控制节点向爬行节点发送电影ID，以movies为信号量
+                    System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "请求新上架的电影ID！");
+                    this.sendMovie(movieIDUnfinishedList);
+                } else if (msg.contains("###comments###".subSequence(0, 10))) {
+                    //控制节点向爬行节点发送电影短评，以comments为信号量
+                    System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "传来电影短评的源代码！");
+                    this.receiveComment(msg);
+                }
+            }
+        } catch (IOException e) {
+        } finally {
+            try {
+                if (socket != null) {
+                    socket.close();
+                }
+            } catch (IOException e) {
+            }
+        }
     }
 }
