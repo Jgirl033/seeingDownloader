@@ -13,9 +13,17 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import team.beatles.file.Reader;
+import team.beatles.mtime.collector.MtimeCommentPageCollector;
 
 /**
- * 网页源代码程序下载客户端
+ * 网页源代码程序下载客户端，即爬行节点
  *
  * @author admin Jgirl
  */
@@ -54,6 +62,40 @@ public class SpiderClient {
      */
     public void send(String msg) {
         pw.println(msg);//写入网卡输入流,由系统调用底层函数，经网卡发送给服务器
+    }
+
+    public void sendComment(ArrayList<String> midList, String startIndex, String endIndex) {
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonArrComment = new JSONArray();
+
+        for (String mid : midList) {
+            MtimeCommentPageCollector mcpc = new MtimeCommentPageCollector(mid);
+            mcpc.start("h", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
+            mcpc.start("n", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
+
+            JSONObject jsonObjComment = new JSONObject();
+
+            try {
+                Reader rh = new Reader("doc/client/mtime/comment/hot/", mid + ".txt");
+                Reader rn = new Reader("doc/client/mtime/comment/new/", mid + ".txt");
+
+                jsonObjComment.put("mid", mid);
+                jsonObjComment.put("hot_comment", rh.read());
+                jsonObjComment.put("new_comment", rn.read());
+
+                jsonArrComment.put(jsonObjComment);
+
+            } catch (JSONException ex) {
+                Logger.getLogger(SpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        try {
+            jsonObj.put("###comments###", jsonArrComment);//再将这个json格式的的数组放到最终的json对象中。
+        } catch (JSONException ex) {
+            Logger.getLogger(SpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        pw.println(jsonObj.toString());
     }
 
     /**
