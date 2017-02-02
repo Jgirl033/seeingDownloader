@@ -25,24 +25,17 @@ import team.beatles.mtime.entity.MtimeCommentPK;
 public class MtimeCommentSpider {
 
     private final String mid;
+    private final String commentSourceCode;
+    private final String status;
 
     /**
      * 使用电影ID构造一个新的MtimeCommentSpider()
      *
      * @param mid
+     * @param status
      */
-    public MtimeCommentSpider(String mid) {
+    public MtimeCommentSpider(String mid, String status) {
         this.mid = mid;
-    }
-
-    /**
-     * 获取某部电影的短评列表
-     *
-     * @param status "h"表示最热短评，"n"表示最新短评
-     * @return ArrayList 某部电影的短评列表
-     */
-    public ArrayList<MtimeComment> getComment(String status) {
-
         String filepath;
         String filename = this.mid + ".txt";
         if (status == "n") {
@@ -51,13 +44,28 @@ public class MtimeCommentSpider {
             filepath = "doc/server/mtime/comment/hot/";
         }
         Reader rc = new Reader(filepath, filename);
-        String commentSourceCode = rc.read();
+        this.commentSourceCode = rc.read();
+        this.status = status;
+    }
+
+    public MtimeCommentSpider(String mid, String status, String commentSourceCode) {
+        this.mid = mid;
+        this.commentSourceCode = commentSourceCode;
+        this.status = status;
+    }
+
+    /**
+     * 获取某部电影的短评列表
+     *
+     * @return ArrayList 某部电影的短评列表
+     */
+    public ArrayList<MtimeComment> getComment() {
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         ArrayList<MtimeComment> commentList = new ArrayList<>();
 
         Pattern pattern = Pattern.compile("<h3>(.*?)</h3>.*?<a target=\"_blank\" title=\"(.*?)\" href=\"http://my.mtime.com/(.*?)/\">.*?</a>.*?<p class=\"px14\">.*?<p class=\"mt6 px12 clearfix\">.*?<span class=\"db_point ml6\">(.*?)</span></p>.*? <div class=\"mt10\"><a href=\".*?\" target=\"_blank\" entertime=\"(.*?)\"></a></div> ");
-        Matcher matcher = pattern.matcher(commentSourceCode);
+        Matcher matcher = pattern.matcher(this.commentSourceCode);
         while (matcher.find()) {
 
             MtimeCommentPK commentPK = new MtimeCommentPK();
@@ -65,7 +73,7 @@ public class MtimeCommentSpider {
             commentPK.setUid(matcher.group(3).replaceAll("<.*?>", "").trim());
             MtimeComment comment = new MtimeComment();
             comment.setMtimeCommentPK(commentPK);
-            comment.setStatus(status);
+            comment.setStatus(this.status);
             comment.setSource(3);
             comment.setRating(Double.parseDouble(matcher.group(4).replaceAll("<.*?>", "").trim()));
             try {
