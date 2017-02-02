@@ -30,8 +30,8 @@ public class MtimeUserSpider {
     public MtimeUserSpider(String uid) {
         this.uid = uid;
         String filename = this.uid + ".txt";
-        Reader ru = new Reader("doc/mtime/user/profile/", filename);
-        Reader rc = new Reader("doc/mtime/user/comment/", filename);
+        Reader ru = new Reader("doc/server/mtime/user/profile/", filename);
+        Reader rc = new Reader("doc/server/mtime/user/comment/", filename);
         this.profileSourceCode = ru.read();
         this.commentSourceCode = rc.read();
     }

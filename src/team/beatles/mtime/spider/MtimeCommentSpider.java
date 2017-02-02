@@ -46,10 +46,9 @@ public class MtimeCommentSpider {
         String filepath;
         String filename = this.mid + ".txt";
         if (status == "n") {
-            filepath = "doc/mtime/comment/new/";
+            filepath = "doc/server/mtime/comment/new/";
         } else {
-            filepath = "doc/mtime/comment/hot/";
-
+            filepath = "doc/server/mtime/comment/hot/";
         }
         Reader rc = new Reader(filepath, filename);
         String commentSourceCode = rc.read();

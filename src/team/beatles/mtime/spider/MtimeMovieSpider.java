@@ -33,8 +33,8 @@ public class MtimeMovieSpider {
         this.mid = mid;
 
         String filename = mid + ".txt";
-        Reader ri = new Reader("doc/mtime/movie/information/", filename);
-        Reader rs = new Reader("doc/mtime/movie/score/", filename);
+        Reader ri = new Reader("doc/server/mtime/movie/information/", filename);
+        Reader rs = new Reader("doc/server/mtime/movie/score/", filename);
         this.informationSourceCode = ri.read();
         this.scoreSourceCode = rs.read();
     }
