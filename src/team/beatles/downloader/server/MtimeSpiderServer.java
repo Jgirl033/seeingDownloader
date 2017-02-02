@@ -29,11 +29,11 @@ import team.beatles.mtime.util.MtimeDBCheck;
 import team.beatles.downloader.web.WebConnect;
 
 /**
- * 获取新上架的电影名称以及对应的豆瓣ID和时光网ID，即控制节点
+ * 获取新上架的电影名称以及对应的时光网ID，即控制节点
  *
  * @author admin Jgirl
  */
-public class SpiderServer implements Runnable {
+public class MtimeSpiderServer implements Runnable {
 
     private final Socket socket;
 
@@ -46,7 +46,7 @@ public class SpiderServer implements Runnable {
      * @param socket 与客户端连接的socket
      * @throws IOException
      */
-    public SpiderServer(Socket socket) throws IOException {
+    public MtimeSpiderServer(Socket socket) throws IOException {
 
         this.socket = socket;
 
@@ -75,7 +75,7 @@ public class SpiderServer implements Runnable {
                     jsonObjMovie.put("mid", mid);
                     jsonArrMovie.put(jsonObjMovie);
                 } catch (JSONException ex) {
-                    Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MtimeSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -83,7 +83,7 @@ public class SpiderServer implements Runnable {
             pw.println(jsonObj.toString());
 
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MtimeSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -103,7 +103,7 @@ public class SpiderServer implements Runnable {
                     jsonObjUser.put("uid", uid);
                     jsonArrUser.put(jsonObjUser);
                 } catch (JSONException ex) {
-                    Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MtimeSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -111,7 +111,7 @@ public class SpiderServer implements Runnable {
             pw.println(jsonObj.toString());
 
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MtimeSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -161,7 +161,7 @@ public class SpiderServer implements Runnable {
             }
 
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MtimeSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return uidList;
     }
@@ -195,7 +195,7 @@ public class SpiderServer implements Runnable {
             }
 
         } catch (JSONException ex) {
-            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MtimeSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return uidList;
     }
@@ -223,7 +223,7 @@ public class SpiderServer implements Runnable {
      *
      * @return List 新上架的电影的时光网ID列表
      */
-    public static List<String> getMtimeMovieID() {
+    public static List<String> getMovieID() {
         List<String> movieIDUnfinishedList = new ArrayList<>();
         List<String> movieUnfinishedList = getMovieName();
         for (String movie : movieUnfinishedList) {
@@ -251,7 +251,7 @@ public class SpiderServer implements Runnable {
 
     @Override
     public void run() {
-        List<String> movieIDUnfinishedList = SpiderServer.getMtimeMovieID();
+        List<String> movieIDUnfinishedList = MtimeSpiderServer.getMovieID();
         try {
             String msg = null;
             while ((msg = br.readLine()) != null) {
