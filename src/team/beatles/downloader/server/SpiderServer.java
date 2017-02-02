@@ -122,7 +122,7 @@ public class SpiderServer implements Runnable {
      * @return ArrayList 从评论中提取的用户ID列表
      */
     public ArrayList<String> receiveComment(String commentMsg) {
-        
+
         ArrayList<String> uidList = new ArrayList<>();
         try {
             JSONObject json = new JSONObject(commentMsg);
@@ -149,8 +149,11 @@ public class SpiderServer implements Runnable {
                 commentList.addAll(newCommentList);
                 commentList.addAll(hotCommentList);
 
+                MtimeDBCheck dbc = new MtimeDBCheck();
                 for (MtimeComment comment : commentList) {
-                    uidList.add(comment.getMtimeCommentPK().getUid());
+                    String uid = comment.getMtimeCommentPK().getUid();
+                    if(dbc.isUserExist(uid))
+                        uidList.add(uid);
                 }
             }
 
@@ -159,6 +162,41 @@ public class SpiderServer implements Runnable {
         }
         return uidList;
     }
+    
+    /**
+     * 接收客户端发送过来的用户源代码
+     *
+     * @param userMsg 短评源代码
+     * @return ArrayList 从评论中提取的用户ID列表
+     */
+    public ArrayList<String> receiveUser(String userMsg) {
+
+        ArrayList<String> uidList = new ArrayList<>();
+        try {
+            JSONObject json = new JSONObject(userMsg);
+            JSONArray jsonArr = json.getJSONArray("###users###");
+
+            String filepathProfile = "doc/server/mtime/user/profile/";
+            String filepathComment = "doc/server/mtime/user/comment/";
+
+            for (int i = 0; i < jsonArr.length(); i++) {
+                String uid = jsonArr.getJSONObject(i).getString("uid");
+                String profile = jsonArr.getJSONObject(i).getString("profile");
+                String comment = jsonArr.getJSONObject(i).getString("comment");
+
+                Writer wh = new Writer(filepathProfile, uid + ".txt");
+                wh.write(profile, true);
+
+                Writer wn = new Writer(filepathComment, uid + ".txt");
+                wn.write(comment, true);
+            }
+
+        } catch (JSONException ex) {
+            Logger.getLogger(SpiderServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return uidList;
+    }
+    
 
     /**
      * 使用"电影"关键字在百度上进行搜索，对其返回网页进行解析，获取新上架的电影名称列表
@@ -232,6 +270,8 @@ public class SpiderServer implements Runnable {
                     System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "传来电影短评的源代码！");
                     ArrayList<String> uidList = this.receiveComment(msg);
                     this.sendUser(uidList);
+                }else if(msg.contains("###users###".subSequence(0, 8))){
+                    this.receiveUser(msg);
                 }
             }
         } catch (IOException e) {
