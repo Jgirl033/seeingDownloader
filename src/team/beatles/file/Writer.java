@@ -24,7 +24,8 @@ public class Writer {
 
     /**
      * 使用默认文件路径和文件名构造一个新的Writer()
-     * @param filename
+     *
+     * @param filename 指定文件名
      */
     public Writer(String filename) {
         this.filename = "doc/" + filename;
@@ -33,6 +34,7 @@ public class Writer {
 
     /**
      * 使用指定文件路径和文件名构造一个新的Writer()
+     *
      * @param filePath 指定文件路径
      * @param filename 指定文件名
      */
@@ -55,6 +57,7 @@ public class Writer {
 
     /**
      * 对指定文件写入重写方式具体内容
+     *
      * @param content 需要写入文件的内容
      */
     public void write(String content) {
@@ -68,6 +71,7 @@ public class Writer {
 
     /**
      * 对指定文件以追加方式写入具体内容
+     *
      * @param content 需要写入文件的内容
      * @param flag true则表示追加写入文件，false则表示重写文件
      */

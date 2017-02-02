@@ -24,7 +24,8 @@ public class Reader {
 
     /**
      * 使用默认文件路径和文件名构造一个新的Reader()
-     * @param filename
+     *
+     * @param filename 指定文件名
      */
     public Reader(String filename) {
         this.filename = "doc/" + filename;
@@ -32,6 +33,7 @@ public class Reader {
 
     /**
      * 使用指定文件路径和文件名构造一个新的Reader()
+     *
      * @param filePath 指定文件路径
      * @param filename 指定文件名
      */
@@ -41,6 +43,7 @@ public class Reader {
 
     /**
      * 将指定文件的内容读取出来
+     *
      * @return String 文件内容
      */
     public String read() {
