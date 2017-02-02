@@ -7,6 +7,12 @@
     <class>team.beatles.mtime.entity.MtimeWish</class>
     <class>team.beatles.mtime.entity.MtimeComment</class>
     <class>team.beatles.mtime.entity.MtimeUser</class>
+    <class>team.beatles.douban.entity.DoubanUser</class>
+    <class>team.beatles.douban.entity.DoubanCollect</class>
+    <class>team.beatles.douban.entity.DoubanMovie</class>
+    <class>team.beatles.douban.entity.DoubanBookOffice</class>
+    <class>team.beatles.douban.entity.DoubanComment</class>
+    <class>team.beatles.douban.entity.DoubanWish</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/downloader?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="xie5321927"/>
