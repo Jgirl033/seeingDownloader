@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 /**
  * 判断数据是否存在于数据库
+ *
  * @author admin Jgirl
  */
 public class DoubanDBCheck {
@@ -29,13 +30,14 @@ public class DoubanDBCheck {
 
     /**
      * 使用豆瓣用户ID判断用户是否已在数据库中
+     *
      * @param uid 豆瓣用户唯一ID
      * @return boolean 表示用户数据是否存在于数据库中
      */
-    public boolean isUserExist(String uid){
+    public boolean isUserExist(String uid) {
         boolean result = false;
         try {
-            String sql = "SELECT * FROM douban_user where uid = '" + uid+"'";
+            String sql = "SELECT * FROM douban_user where uid = '" + uid + "'";
             PreparedStatement ps = this.dbc.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             result = rs.next();
@@ -44,11 +46,17 @@ public class DoubanDBCheck {
         }
         return result;
     }
-    
-    public boolean isCommentExist(String uid, String mid){
+
+    /**
+     *
+     * @param uid
+     * @param mid
+     * @return
+     */
+    public boolean isCommentExist(String uid, String mid) {
         boolean result = false;
         try {
-            String sql = "SELECT * FROM douban_comment where uid = '" + uid+"' and mid='"+mid+"'";
+            String sql = "SELECT * FROM douban_comment where uid = '" + uid + "' and mid='" + mid + "'";
             PreparedStatement ps = this.dbc.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             result = rs.next();
@@ -57,11 +65,16 @@ public class DoubanDBCheck {
         }
         return result;
     }
-    
-    public boolean isMovieExist(String mid){
+
+    /**
+     *
+     * @param mid
+     * @return
+     */
+    public boolean isMovieExist(String mid) {
         boolean result = false;
         try {
-            String sql = "SELECT * FROM douban_movie where mid = '" + mid+"'";
+            String sql = "SELECT * FROM douban_movie where mid = '" + mid + "'";
             PreparedStatement ps = this.dbc.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             result = rs.next();

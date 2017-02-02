@@ -17,6 +17,7 @@ import team.beatles.douban.entity.DoubanUser;
 
 /**
  * 数据库插入类
+ *
  * @author admin Jgirl
  */
 public class DoubanDBInsert {
@@ -29,11 +30,12 @@ public class DoubanDBInsert {
      */
     public DoubanDBInsert() {
         this.dbc = new DoubanDBConnect().getDBConnection();
-        this.database = "seeing";
+        this.database = "downloader";
     }
 
     /**
      * 存储电影基本信息到数据库
+     *
      * @param m 某部电影的基本信息
      */
     public void saveMovie(DoubanMovie m) {
@@ -77,6 +79,7 @@ public class DoubanDBInsert {
 
     /**
      * 批量存储电影短评到数据库
+     *
      * @param commentList 某部电影的短评列表
      */
     public void saveComment(ArrayList<DoubanComment> commentList) {
@@ -86,7 +89,7 @@ public class DoubanDBInsert {
             System.out.println(commentList);
             DoubanDBCheck dbcc = new DoubanDBCheck();
             for (DoubanComment comment : commentList) {
-                if(dbcc.isCommentExist(comment.getDoubanCommentPK().getUid(),String.valueOf(comment.getDoubanCommentPK().getMid()))){
+                if (dbcc.isCommentExist(comment.getDoubanCommentPK().getUid(), String.valueOf(comment.getDoubanCommentPK().getMid()))) {
                     continue;
                 }
                 System.out.println(comment.getComment());
@@ -110,6 +113,7 @@ public class DoubanDBInsert {
 
     /**
      * 批量存储发表短评的用户到数据库
+     *
      * @param userList 某部电影发表短评的用户列表
      */
     public void saveUser(ArrayList<DoubanUser> userList) {
@@ -131,7 +135,7 @@ public class DoubanDBInsert {
                 ps.addBatch();
             }
             ps.executeBatch();
-            
+
         } catch (Exception ex) {
             System.out.println("Error : " + ex.toString());
         }

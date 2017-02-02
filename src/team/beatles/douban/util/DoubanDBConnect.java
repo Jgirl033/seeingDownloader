@@ -11,6 +11,7 @@ import java.sql.SQLException;
 
 /**
  * 数据库连接类
+ *
  * @author admin
  */
 class DoubanDBConnect {
