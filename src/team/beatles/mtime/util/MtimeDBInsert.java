@@ -30,7 +30,7 @@ public class MtimeDBInsert {
      */
     public MtimeDBInsert() {
         this.dbc = new MtimeDBConnect().getDBConnection();
-        this.database = "seeing";
+        this.database = "downloader";
     }
 
     /**
