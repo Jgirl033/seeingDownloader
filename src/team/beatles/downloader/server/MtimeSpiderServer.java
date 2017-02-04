@@ -271,13 +271,14 @@ public class MtimeSpiderServer implements Runnable {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Mtime服务器出现错误："+e.toString());
+            System.out.println("Mtime服务器出现数据传输异常：" + e.toString());
         } finally {
             try {
                 if (socket != null) {
                     socket.close();
                 }
             } catch (IOException e) {
+                System.out.println("Mtime服务器出现套接字异常：" + e.toString());
             }
         }
     }

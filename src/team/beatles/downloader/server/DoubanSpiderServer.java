@@ -160,11 +160,10 @@ public class DoubanSpiderServer implements Runnable {
      * 接收客户端发送过来的用户源代码
      *
      * @param userMsg 短评源代码
-     * @return ArrayList 从评论中提取的用户ID列表
      */
-    public ArrayList<String> receiveUser(String userMsg) {
+    public void receiveUser(String userMsg) {
 
-        ArrayList<String> uidList = new ArrayList<>();
+//        ArrayList<String> uidList = new ArrayList<>();
         try {
             JSONObject json = new JSONObject(userMsg);
             JSONArray jsonArr = json.getJSONArray("###users###");
@@ -182,7 +181,7 @@ public class DoubanSpiderServer implements Runnable {
         } catch (JSONException ex) {
             Logger.getLogger(DoubanSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return uidList;
+//        return uidList;
     }
 
     /**
@@ -239,7 +238,7 @@ public class DoubanSpiderServer implements Runnable {
         try {
             String msg = null;
             while ((msg = br.readLine()) != null) {
-                if (msg.contains("Hello".subSequence(0, 4))) {
+                if (msg.contains("###Hello###".subSequence(0, 10))) {
                     System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "注册上线！");
                     pw.println("success");
                 } else if (msg.contains("###Bye###".subSequence(0, 8))) {
@@ -262,12 +261,15 @@ public class DoubanSpiderServer implements Runnable {
                 }
             }
         } catch (IOException e) {
+            System.out.println("Douban服务器出现数据传输异常：" + e.toString());
         } finally {
             try {
                 if (socket != null) {
                     socket.close();
                 }
             } catch (IOException e) {
+                System.out.println("Mtime服务器出现套接字异常：" + e.toString());
+
             }
         }
     }
