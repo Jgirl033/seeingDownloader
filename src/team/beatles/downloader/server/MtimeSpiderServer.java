@@ -65,26 +65,23 @@ public class MtimeSpiderServer implements Runnable {
      * @param movieIDUnfinishedList 新上架的电影ID列表
      */
     public void sendMovie(List<String> movieIDUnfinishedList) {
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonArrMovie = new JSONArray();
         try {
-            JSONObject jsonObj = new JSONObject();
-            JSONArray jsonArrMovie = new JSONArray();
-
             for (String mid : movieIDUnfinishedList) {
-                try {
-                    JSONObject jsonObjMovie = new JSONObject();
-                    jsonObjMovie.put("mid", mid);
-                    jsonArrMovie.put(jsonObjMovie);
-                } catch (JSONException ex) {
-                    Logger.getLogger(MtimeSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
-                }
+
+                JSONObject jsonObjMovie = new JSONObject();
+                jsonObjMovie.put("mid", mid);
+                jsonArrMovie.put(jsonObjMovie);
+
             }
 
             jsonObj.put("###movies###", jsonArrMovie);
             pw.println(jsonObj.toString());
-
         } catch (JSONException ex) {
             Logger.getLogger(MtimeSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     /**
@@ -98,13 +95,9 @@ public class MtimeSpiderServer implements Runnable {
             JSONArray jsonArrUser = new JSONArray();
 
             for (String uid : uidList) {
-                try {
-                    JSONObject jsonObjUser = new JSONObject();
-                    jsonObjUser.put("uid", uid);
-                    jsonArrUser.put(jsonObjUser);
-                } catch (JSONException ex) {
-                    Logger.getLogger(MtimeSpiderServer.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                JSONObject jsonObjUser = new JSONObject();
+                jsonObjUser.put("uid", uid);
+                jsonArrUser.put(jsonObjUser);
             }
 
             jsonObj.put("###users###", jsonArrUser);
@@ -255,7 +248,7 @@ public class MtimeSpiderServer implements Runnable {
         try {
             String msg = null;
             while ((msg = br.readLine()) != null) {
-                if (msg.contains("Hello".subSequence(0, 4))) {
+                if (msg.contains("###Hello###".subSequence(0, 10))) {
                     System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "注册上线！");
                     pw.println("success");
                 } else if (msg.contains("###Bye###".subSequence(0, 8))) {
@@ -278,6 +271,7 @@ public class MtimeSpiderServer implements Runnable {
                 }
             }
         } catch (IOException e) {
+            System.out.println("Mtime服务器出现错误："+e.toString());
         } finally {
             try {
                 if (socket != null) {
