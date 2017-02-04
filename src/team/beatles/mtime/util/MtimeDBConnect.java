@@ -37,7 +37,7 @@ class MtimeDBConnect {
             this.conn = DriverManager.getConnection(str, user, password);
             System.out.println("连接成功！");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
-            System.out.println("Error : " + ex.toString());
+            System.out.println("混蛋：" + ex.toString());
             System.out.println("连接失败！");
         }
     }

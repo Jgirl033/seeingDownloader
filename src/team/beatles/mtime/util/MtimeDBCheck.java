@@ -37,7 +37,7 @@ public class MtimeDBCheck {
     public boolean isMovieExist(String mid) {
         boolean result = false;
         try {
-            String sql = "SELECT * FROM douban_movie where mid = '" + mid + "'";
+            String sql = "SELECT * FROM mtime_movie where mid = '" + mid + "'";
             PreparedStatement ps = this.dbc.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             result = rs.next();

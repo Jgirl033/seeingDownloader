@@ -62,8 +62,8 @@ public class MtimeDBInsert {
                 System.out.println("插入movie表成功");
             }
         } catch (Exception ex) {
-            System.out.println("辣鸡，存不进去啊");
-            System.out.println("Error : " + ex.toString());
+            System.out.println("辣鸡，saveMovie存不进去啊！"+MtimeDBInsert.class.getName());
+            System.out.println("混蛋 : " + ex.toString());
         }
     }
 
@@ -94,8 +94,8 @@ public class MtimeDBInsert {
             ps.executeBatch();
 
         } catch (Exception ex) {
-            System.out.println("辣鸡，存不进去啊");
-            System.out.println("Error : " + ex.toString());
+           System.out.println("辣鸡，saveUser存不进去啊！"+MtimeDBInsert.class.getName());
+            System.out.println("混蛋 : " + ex.toString());
         }
     }
 
@@ -125,8 +125,8 @@ public class MtimeDBInsert {
             }
             prest.executeBatch();
         } catch (SQLException ex) {
-            System.out.println("辣鸡，存不进去啊");
-            Logger.getLogger(MtimeDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("辣鸡，saveComment存不进去啊！"+MtimeDBInsert.class.getName());
+            System.out.println("混蛋 : " + ex.toString());
         }
     }
 
