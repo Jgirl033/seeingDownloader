@@ -66,24 +66,23 @@ public class MtimeCommentSpider {
 
         Pattern pattern = Pattern.compile("<h3>(.*?)</h3>.*?<a target=\"_blank\" title=\"(.*?)\" href=\"http://my.mtime.com/(.*?)/\">.*?</a>.*?<p class=\"px14\">.*?<p class=\"mt6 px12 clearfix\">.*?<span class=\"db_point ml6\">(.*?)</span></p>.*? <div class=\"mt10\"><a href=\".*?\" target=\"_blank\" entertime=\"(.*?)\"></a></div> ");
         Matcher matcher = pattern.matcher(this.commentSourceCode);
-        while (matcher.find()) {
-
-            MtimeCommentPK commentPK = new MtimeCommentPK();
-            commentPK.setMid(Integer.parseInt(this.mid));
-            commentPK.setUid(matcher.group(3).replaceAll("<.*?>", "").trim());
-            MtimeComment comment = new MtimeComment();
-            comment.setMtimeCommentPK(commentPK);
-            comment.setStatus(this.status);
-            comment.setSource(3);
-            comment.setRating(Double.parseDouble(matcher.group(4).replaceAll("<.*?>", "").trim()));
-            try {
+        try {
+            while (matcher.find()) {
+                MtimeCommentPK commentPK = new MtimeCommentPK();
+                commentPK.setMid(Integer.parseInt(this.mid));
+                commentPK.setUid(matcher.group(3).replaceAll("<.*?>", "").trim());
+                MtimeComment comment = new MtimeComment();
+                comment.setMtimeCommentPK(commentPK);
+                comment.setStatus(this.status);
+                comment.setSource(3);
+                comment.setRating(Double.parseDouble(matcher.group(4).replaceAll("<.*?>", "").trim()));
                 comment.setTime(format.parse(matcher.group(5).replaceAll("<.*?>", "").trim()));
-            } catch (ParseException ex) {
-                Logger.getLogger(MtimeCommentSpider.class.getName()).log(Level.SEVERE, null, ex);
+                comment.setComment(matcher.group(1).replaceAll("<.*?>", ""));
+                System.out.println(this.mid + "的" + comment.getStatus() + "的评论为：" + comment.getComment());
+                commentList.add(comment);
             }
-            comment.setComment(matcher.group(1).replaceAll("<.*?>", ""));
-            System.out.println(this.mid + "的" + comment.getStatus() + "的评论为：" + comment.getComment());
-            commentList.add(comment);
+        } catch (ParseException ex) {
+            Logger.getLogger(MtimeCommentSpider.class.getName()).log(Level.SEVERE, null, ex);
         }
         return commentList;
     }
