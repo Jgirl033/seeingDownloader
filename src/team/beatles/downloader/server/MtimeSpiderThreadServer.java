@@ -15,11 +15,12 @@ import java.util.logging.Logger;
 
 /**
  * 多线程服务器，用于服务多个客户端
+ *
  * @author admin Jgirl
  */
 public class MtimeSpiderThreadServer {
 
-    private final int port = 8181;
+    private final int port = 9191;
     private final ServerSocket server;
     private final int POOL_SIZE = 3;
     private final ExecutorService executorService;
@@ -30,12 +31,12 @@ public class MtimeSpiderThreadServer {
      * @throws IOException
      */
     public MtimeSpiderThreadServer() throws IOException {
-        server = new ServerSocket(this.port);//开启8181端口，初始化服务器,服务器端只需要端口参数      
+        server = new ServerSocket(this.port);//开启8080端口，初始化服务器,服务器端只需要端口参数      
         //创建线程池
         //Runtime的availableProcessors()方法返回当前系统的CPU的数目
         //系统的CPU越多，线程池中工作线程的数目也越多
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * POOL_SIZE);
-        System.out.println("服务器开启成功！");
+        System.out.println("Mtime服务器开启成功！");
     }
 
     /**
@@ -57,6 +58,7 @@ public class MtimeSpiderThreadServer {
 
     /**
      * 服务器主函数
+     *
      * @param arg 主函数命令行参数
      * @throws IOException
      */

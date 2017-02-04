@@ -35,7 +35,7 @@ public class DoubanSpiderThreadServer {
         //Runtime的availableProcessors()方法返回当前系统的CPU的数目
         //系统的CPU越多，线程池中工作线程的数目也越多
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * POOL_SIZE);
-        System.out.println("服务器开启成功！");
+        System.out.println("Douban服务器开启成功！");
     }
 
     /**
