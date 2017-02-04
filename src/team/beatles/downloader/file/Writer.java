@@ -50,7 +50,8 @@ public class Writer {
         if (!this.file.exists()) {
             try {
                 this.file.createNewFile();
-            } catch (IOException e) {
+            } catch (IOException ex) {
+                Logger.getLogger(Writer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
