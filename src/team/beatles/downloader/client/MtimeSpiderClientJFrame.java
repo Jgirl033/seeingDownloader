@@ -71,7 +71,7 @@ public class MtimeSpiderClientJFrame extends javax.swing.JFrame {
 
         jLabel2.setText("port：");
 
-        jTextPort.setText("8181");
+        jTextPort.setText("9191");
         jTextPort.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextPortActionPerformed(evt);
@@ -199,8 +199,9 @@ public class MtimeSpiderClientJFrame extends javax.swing.JFrame {
         String port = jTextPort.getText();
         try {
             client = new MtimeSpiderClient(ip, port);
-            client.send("Hello, I am " + ip);
+            client.send("###Hello###, I am " + ip);
             String msg = client.receive();
+            jTextShow.append(msg);
             if (msg != null) {
                 jTextShow.append("服务器连接成功！\n");
             } else {
@@ -257,6 +258,7 @@ public class MtimeSpiderClientJFrame extends javax.swing.JFrame {
                             break;
                         }
                     } catch (IOException ex) {
+                        System.out.println("Mtime客户端出现异常：" + e.toString());
                     }
                 }
             }

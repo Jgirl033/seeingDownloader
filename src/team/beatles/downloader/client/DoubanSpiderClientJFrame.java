@@ -199,7 +199,7 @@ public class DoubanSpiderClientJFrame extends javax.swing.JFrame {
         String port = jTextPort.getText();
         try {
             client = new DoubanSpiderClient(ip, port);
-            client.send("Hello, I am " + ip);
+            client.send("###Hello###, I am " + ip);
             String msg = client.receive();
             if (msg != null) {
                 jTextShow.append("服务器连接成功！\n");
@@ -257,6 +257,7 @@ public class DoubanSpiderClientJFrame extends javax.swing.JFrame {
                             break;
                         }
                     } catch (IOException ex) {
+                        System.out.println("Douban客户端出现异常：" + ex.toString());
                     }
                 }
             }
