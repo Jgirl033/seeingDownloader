@@ -71,36 +71,33 @@ public class MtimeSpiderClient {
      * @param uidList 用户ID列表
      */
     public void sendUser(ArrayList<String> uidList) {
+
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonArrUser = new JSONArray();
+
+        MtimeUserPageCollector mupa = new MtimeUserPageCollector();
+        mupa.start(uidList);
+
         try {
-            JSONObject jsonObj = new JSONObject();
-            JSONArray jsonArrUser = new JSONArray();
-
-            MtimeUserPageCollector mupa = new MtimeUserPageCollector();
-            mupa.start(uidList);
-
             for (String uid : uidList) {
 
                 Reader rp = new Reader("doc/client/mtime/user/profile/", uid + ".txt");
-
                 Reader rc = new Reader("doc/client/mtime/user/comment/", uid + ".txt");
 
-                try {
-                    JSONObject jsonObjUser = new JSONObject();
-                    jsonObjUser.put("uid", uid);
-                    jsonObjUser.put("profile", rp.read());
-                    jsonObjUser.put("comment", rc.read());
-                    jsonArrUser.put(jsonObjUser);
-                } catch (JSONException ex) {
-                    Logger.getLogger(MtimeSpiderClient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+                JSONObject jsonObjUser = new JSONObject();
+                jsonObjUser.put("uid", uid);
+                jsonObjUser.put("profile", rp.read());
+                jsonObjUser.put("comment", rc.read());
+                jsonArrUser.put(jsonObjUser);
 
+            }
             jsonObj.put("###users###", jsonArrUser);
             pw.println(jsonObj.toString());
 
         } catch (JSONException ex) {
             Logger.getLogger(MtimeSpiderClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     /**
@@ -113,15 +110,14 @@ public class MtimeSpiderClient {
     public void sendComment(ArrayList<String> midList, String startIndex, String endIndex) {
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonArrComment = new JSONArray();
+        try {
+            for (String mid : midList) {
+                MtimeCommentPageCollector mcpc = new MtimeCommentPageCollector(mid);
+                mcpc.start("h", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
+                mcpc.start("n", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
 
-        for (String mid : midList) {
-            MtimeCommentPageCollector mcpc = new MtimeCommentPageCollector(mid);
-            mcpc.start("h", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
-            mcpc.start("n", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
+                JSONObject jsonObjComment = new JSONObject();
 
-            JSONObject jsonObjComment = new JSONObject();
-
-            try {
                 Reader rh = new Reader("doc/client/mtime/comment/hot/", mid + ".txt");
                 Reader rn = new Reader("doc/client/mtime/comment/new/", mid + ".txt");
 
@@ -130,16 +126,11 @@ public class MtimeSpiderClient {
                 jsonObjComment.put("new_comment", rn.read());
 
                 jsonArrComment.put(jsonObjComment);
-
-            } catch (JSONException ex) {
-                Logger.getLogger(MtimeSpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-        }
-        try {
             jsonObj.put("###comments###", jsonArrComment);//再将这个json格式的的数组放到最终的json对象中。
+
         } catch (JSONException ex) {
-            Logger.getLogger(MtimeSpiderClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MtimeSpiderClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         pw.println(jsonObj.toString());
     }
@@ -157,6 +148,7 @@ public class MtimeSpiderClient {
 
     /**
      * 接收服务器发送过来的新上架的电影ID数据
+     *
      * @param midMsg 电影ID数据
      * @return ArrayList 处理电影ID数据，将其转化为列表
      * @throws IOException
@@ -179,6 +171,7 @@ public class MtimeSpiderClient {
 
     /**
      * 接收服务器发送过来的新生成的用户ID数据
+     *
      * @param uidMsg 用户ID数据
      * @return ArrayList 处理用户ID数据，将其转化为列表
      * @throws IOException
