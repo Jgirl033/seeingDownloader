@@ -113,17 +113,23 @@ public class MtimeSpiderClient {
         try {
             for (String mid : midList) {
                 MtimeCommentPageCollector mcpc = new MtimeCommentPageCollector(mid);
-                mcpc.start("h", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
-                mcpc.start("n", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
+                ArrayList<String> hotCommentSourceCodeList = mcpc.start("h", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
+                ArrayList<String> newCommentSourceCodeList = mcpc.start("n", Integer.parseInt(startIndex), Integer.parseInt(endIndex));
+
+                String hotComment = "";
+                for (String hotCommentSourceCode : hotCommentSourceCodeList) {
+                    hotComment += hotCommentSourceCode;
+                }
+                String newComment = "";
+                for (String newCommentSourceCode : newCommentSourceCodeList) {
+                    newComment += newCommentSourceCode;
+                }
 
                 JSONObject jsonObjComment = new JSONObject();
 
-                Reader rh = new Reader("doc/client/mtime/comment/hot/", mid + ".txt");
-                Reader rn = new Reader("doc/client/mtime/comment/new/", mid + ".txt");
-
                 jsonObjComment.put("mid", mid);
-                jsonObjComment.put("hot_comment", rh.read());
-                jsonObjComment.put("new_comment", rn.read());
+                jsonObjComment.put("hot_comment", hotComment);
+                jsonObjComment.put("new_comment", newComment);
 
                 jsonArrComment.put(jsonObjComment);
             }
