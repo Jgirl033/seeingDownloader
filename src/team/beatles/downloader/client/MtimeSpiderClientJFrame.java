@@ -258,7 +258,7 @@ public class MtimeSpiderClientJFrame extends javax.swing.JFrame {
                             break;
                         }
                     } catch (IOException ex) {
-                        System.out.println("Mtime客户端出现异常：" + e.toString());
+                        System.out.println("Mtime客户端出现异常：" + ex.toString());
                     }
                 }
             }
