@@ -5,6 +5,7 @@
  */
 package team.beatles.mtime.collector;
 
+import java.util.ArrayList;
 import team.beatles.downloader.file.Writer;
 import team.beatles.downloader.web.WebConnect;
 
@@ -29,10 +30,12 @@ public class MtimeCommentPageCollector {
      * @param status "h"表示最热短评，"n"表示最新短评
      * @param start 短评首页数
      * @param end 短评尾页数
+     * @return ArrayList 某部电影的短评页面源代码列表
      */
-    public void start(String status, int start, int end) {
+    public ArrayList start(String status, int start, int end) {
 
         String filepath;
+        ArrayList<String> commentSourceCodeList = new ArrayList<>();
         for (int i = start; i < end; i++) {
             //获取评论的网页源代码
             String url;
@@ -58,6 +61,10 @@ public class MtimeCommentPageCollector {
             //将源代码写入文件
             Writer w = new Writer(filepath, this.mid + ".txt");
             w.write(sourceCode, true);
+            
+            commentSourceCodeList.add(sourceCode);
         }
+        
+        return commentSourceCodeList;
     }
 }
