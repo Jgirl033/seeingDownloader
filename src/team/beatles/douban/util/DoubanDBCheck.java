@@ -43,6 +43,13 @@ public class DoubanDBCheck {
             result = rs.next();
         } catch (SQLException ex) {
             Logger.getLogger(DoubanDBCheck.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(DoubanDBCheck.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(DoubanDBCheck.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return result;
     }

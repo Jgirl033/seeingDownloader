@@ -74,6 +74,14 @@ public class DoubanDBInsert {
             }
         } catch (Exception ex) {
             System.out.println("Error : " + ex.toString());
+            Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(DoubanDBInsert.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -108,6 +116,13 @@ public class DoubanDBInsert {
         } catch (SQLException ex) {
             System.out.println("辣鸡，存不进去啊");
             Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(DoubanDBInsert.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -121,12 +136,7 @@ public class DoubanDBInsert {
             String insql;
             insql = "REPLACE INTO  `" + this.database + "`.`douban_user` (`uid` ,`name` ,`source`,`area`) VALUES (?,?,?,?);";
             PreparedStatement ps = this.dbc.prepareStatement(insql);
-            DoubanDBCheck d = new DoubanDBCheck();
             for (DoubanUser user : userList) {
-//                if(d.isUserExist(user.getUid())){
-//                    continue;
-//                }
-                //执行SQL语句
                 ps.setString(1, user.getUid());
                 ps.setString(2, user.getName());
                 ps.setInt(3, user.getSource());
@@ -135,9 +145,16 @@ public class DoubanDBInsert {
                 ps.addBatch();
             }
             ps.executeBatch();
-
         } catch (Exception ex) {
             System.out.println("Error : " + ex.toString());
+            Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(DoubanDBInsert.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

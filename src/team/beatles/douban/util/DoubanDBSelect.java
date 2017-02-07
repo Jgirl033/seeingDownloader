@@ -70,10 +70,17 @@ public class DoubanDBSelect {
                 m.setFour(rs.getDouble("four"));
                 m.setFive(rs.getDouble("five"));
             } else {
-
+                System.out.println("没有此电影：" + name);
             }
         } catch (SQLException ex) {
             Logger.getLogger(DoubanDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(DoubanDBSelect.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(DoubanDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return m;
     }
@@ -104,6 +111,13 @@ public class DoubanDBSelect {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DoubanDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(DoubanDBSelect.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(DoubanDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return commentList;
     }
@@ -131,13 +145,18 @@ public class DoubanDBSelect {
                 u.setEducation("education");
                 u.setJob(rs.getString("job"));
                 System.out.println(u.getName());
-                System.out.println("------------------------------------------------------------------");
-
             } else {
-                System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                System.out.println("没有此用户：" + uid);
             }
         } catch (SQLException ex) {
             Logger.getLogger(DoubanDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(DoubanDBSelect.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(DoubanDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return u;
     }
