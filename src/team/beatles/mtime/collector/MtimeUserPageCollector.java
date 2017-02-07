@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import team.beatles.downloader.file.Writer;
 import team.beatles.downloader.web.WebConnect;
 import static team.beatles.constant.Constant.mtimeDR;
+import team.beatles.downloader.web.WebPage;
 
 /**
  * 时光网用户主页源代码下载类
@@ -30,20 +31,38 @@ public class MtimeUserPageCollector {
      * @param uidList 用户ID列表
      */
     public void start(ArrayList<String> uidList) {
-
+        
         for (String uid : uidList) {
+            System.out.println(MtimeUserPageCollector.class.getName() + "开始爬取用户" + uid + "的comment源代码");
             String userUrl = "http://sandbox.my.mtime.com/Service/callback.mc?Ajax_CallBack=true&Ajax_CallBackType=Mtime.MemberCenter.Pages.CallbackService&Ajax_CallBackMethod=RemoteLoad&Ajax_CrossDomain=1&Ajax_RequestUrl=http://my.mtime.com/" + uid + "/&Ajax_CallBackArgument0=t&Ajax_CallBackArgument1=" + uid + "/?$2";
             WebConnect conn = new WebConnect(userUrl);
-            String sourceCode = conn.downloadPage().getSourceCode();
+            WebPage p = conn.downloadPage();
+            while (true) {
+                if (p.isSuccess()) {
+                    break;
+                } else {
+                    p = conn.downloadPage();
+                }
+            }
+            String sourceCode = p.getSourceCode();
             Writer w = new Writer("doc/client/mtime/user/comment/", uid + ".txt");
             w.write(sourceCode);
+            System.out.println(MtimeUserPageCollector.class.getName() + "开始写入用户" + uid + "的comment源代码");
 
+            System.out.println(MtimeUserPageCollector.class.getName() + "开始爬取用户" + uid + "的profile源代码");
             String profileUrl = "http://sandbox.my.mtime.com/Service/callback.mc?Ajax_CallBack=true&Ajax_CallBackType=Mtime.MemberCenter.Pages.CallbackService&Ajax_CallBackMethod=RemoteLoad&Ajax_CrossDomain=1&Ajax_RequestUrl=http://my.mtime.com/" + uid + "/profile/&Ajax_CallBackArgument0=t&Ajax_CallBackArgument1=" + uid + "/profile/?$3";
             mtimeDR.get(profileUrl);
             String profileSourceCode = mtimeDR.getPageSource();
-            System.out.println(profileSourceCode);
+            while (true) {
+                if (profileSourceCode.contains("无法访问此网站".subSequence(0, 6))) {
+                    profileSourceCode = mtimeDR.getPageSource();
+                } else {
+                    break;
+                }
+            }
             Writer w2 = new Writer("doc/client/mtime/user/profile/", uid + ".txt");
             w2.write(profileSourceCode);
+            System.out.println(MtimeUserPageCollector.class.getName() + "开始写入用户" + uid + "的profile源代码");
 
         }
     }
