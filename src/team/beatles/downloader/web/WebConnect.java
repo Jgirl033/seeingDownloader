@@ -51,19 +51,28 @@ public class WebConnect {
         String webpage = "";
         BufferedReader in = null;
         WebPage page = new WebPage();
+        System.out.println("爬取的链接为" + this.url);
         try {
             URL realURL = new URL(this.url);
             URLConnection conn = realURL.openConnection();
             conn.connect();
+
             in = new BufferedReader(new InputStreamReader(conn.getInputStream(), this.decodeType));
             String line;
             while ((line = in.readLine()) != null) {
                 webpage = webpage + line;
             }
-            page.setSuccess(true);
+            if (webpage.length() == 0) {
+                page.setSuccess(false);
+                System.out.println(this.url + "的源代码大小是" + webpage.length());
+            } else {
+                page.setSuccess(true);
+                System.out.println(this.url + "的源代码大小是" + webpage.length());
+            }
             page.setSourceCode(webpage);
         } catch (Exception e) {
-            System.out.println("Error!!" + e);
+            System.out.println(WebConnect.class.getName() + "爬取以下链接出错" + this.url);
+            System.err.println(e.toString());
         } finally {
             return page;
         }
