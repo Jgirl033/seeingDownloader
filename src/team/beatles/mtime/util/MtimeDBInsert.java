@@ -62,8 +62,15 @@ public class MtimeDBInsert {
                 System.out.println("插入movie表成功");
             }
         } catch (Exception ex) {
-            System.out.println("辣鸡，saveMovie存不进去啊！"+MtimeDBInsert.class.getName());
+            System.out.println("辣鸡，saveMovie存不进去啊！" + MtimeDBInsert.class.getName());
             System.out.println("混蛋 : " + ex.toString());
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(MtimeDBInsert.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(MtimeDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -94,8 +101,15 @@ public class MtimeDBInsert {
             ps.executeBatch();
 
         } catch (Exception ex) {
-           System.out.println("辣鸡，saveUser存不进去啊！"+MtimeDBInsert.class.getName());
+            System.out.println("辣鸡，saveUser存不进去啊！" + MtimeDBInsert.class.getName());
             System.out.println("混蛋 : " + ex.toString());
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(MtimeDBInsert.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(MtimeDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -125,8 +139,15 @@ public class MtimeDBInsert {
             }
             prest.executeBatch();
         } catch (SQLException ex) {
-            System.out.println("辣鸡，saveComment存不进去啊！"+MtimeDBInsert.class.getName());
+            System.out.println("辣鸡，saveComment存不进去啊！" + MtimeDBInsert.class.getName());
             System.out.println("混蛋 : " + ex.toString());
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(MtimeDBInsert.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(MtimeDBInsert.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

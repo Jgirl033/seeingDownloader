@@ -62,7 +62,15 @@ public class MtimeDBSelect {
 
             }
         } catch (SQLException ex) {
+            System.err.print(MtimeDBSelect.class.getName() + "查询数据库中电影连接出现异常！");
             Logger.getLogger(MtimeDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(MtimeDBSelect.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(MtimeDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return m;
     }
@@ -93,7 +101,15 @@ public class MtimeDBSelect {
 
             }
         } catch (SQLException ex) {
+            System.err.print(MtimeDBSelect.class.getName() + "查询数据库中用户连接出现异常！");
             Logger.getLogger(MtimeDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(MtimeDBSelect.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(MtimeDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return u;
     }
@@ -123,7 +139,15 @@ public class MtimeDBSelect {
                 commentList.add(c);
             }
         } catch (SQLException ex) {
+            System.err.print(MtimeDBSelect.class.getName() + "查询数据库中评论连接出现异常！");
             Logger.getLogger(MtimeDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(MtimeDBSelect.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(MtimeDBSelect.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return commentList;
     }

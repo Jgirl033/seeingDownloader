@@ -42,7 +42,16 @@ public class MtimeDBCheck {
             ResultSet rs = ps.executeQuery();
             result = rs.next();
         } catch (SQLException ex) {
+            System.out.println("辣鸡，isMovieExist报错啊！" + MtimeDBCheck.class.getName());
             Logger.getLogger(MtimeDBCheck.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(MtimeDBCheck.class.getName() + "关闭数据库连接出现异常！");
+
+                Logger.getLogger(MtimeDBCheck.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return result;
     }
@@ -61,7 +70,15 @@ public class MtimeDBCheck {
             ResultSet rs = ps.executeQuery();
             result = rs.next();
         } catch (SQLException ex) {
+            System.out.println("辣鸡，isUserExist报错啊！" + MtimeDBCheck.class.getName());
             Logger.getLogger(MtimeDBCheck.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(MtimeDBCheck.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(MtimeDBCheck.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return result;
     }
@@ -81,7 +98,15 @@ public class MtimeDBCheck {
             ResultSet rs = ps.executeQuery();
             result = rs.next();
         } catch (SQLException ex) {
+            System.out.println("辣鸡，isCommentExist报错啊！" + MtimeDBCheck.class.getName());
             Logger.getLogger(MtimeDBCheck.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                this.dbc.close();
+            } catch (SQLException ex) {
+                System.err.print(MtimeDBCheck.class.getName() + "关闭数据库连接出现异常！");
+                Logger.getLogger(MtimeDBCheck.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return result;
     }
