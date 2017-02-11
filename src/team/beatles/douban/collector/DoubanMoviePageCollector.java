@@ -44,7 +44,7 @@ public class DoubanMoviePageCollector {
         }
 
         String filename = this.mid + ".txt";
-        Writer w = new Writer("doc/client/douban/movie/", filename);
+        Writer w = new Writer("doc/server/douban/movie/", filename);
         w.write(sourceCode);
     }
 
