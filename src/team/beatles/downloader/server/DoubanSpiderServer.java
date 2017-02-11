@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import team.beatles.douban.collector.DoubanMoviePageCollector;
 import team.beatles.douban.entity.DoubanComment;
 import team.beatles.douban.spider.DoubanCommentSpider;
 import team.beatles.douban.util.DoubanDBCheck;
@@ -141,9 +142,9 @@ public class DoubanSpiderServer implements Runnable {
 
                 ArrayList<DoubanComment> commentList = mcsh.getComment("P");
 
-                DoubanDBCheck dbc = new DoubanDBCheck();
                 for (DoubanComment comment : commentList) {
                     String uid = comment.getDoubanCommentPK().getUid();
+                    DoubanDBCheck dbc = new DoubanDBCheck();
                     if (!dbc.isUserExist(uid)) {
                         uidList.add(uid);
                     }
@@ -234,7 +235,13 @@ public class DoubanSpiderServer implements Runnable {
 
     @Override
     public void run() {
+        
         List<String> movieIDUnfinishedList = DoubanSpiderServer.getMovieID();
+        for (String mid : movieIDUnfinishedList) {
+            DoubanMoviePageCollector dmpc = new DoubanMoviePageCollector(mid);
+            dmpc.start();
+        }
+        
         try {
             String msg = null;
             while ((msg = br.readLine()) != null) {
