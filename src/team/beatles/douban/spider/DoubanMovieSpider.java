@@ -63,10 +63,12 @@ public class DoubanMovieSpider {
             movie.setDirector(matcherDirector.group(1).replaceAll("<.*?>", "").trim());
         }
 
-        Pattern patternScreenWriter = Pattern.compile("<span class='pl'>编剧</span>:(.*?)</span>");
-        Matcher matcherScreenWriter = patternScreenWriter.matcher(this.informationSourceCode);
-        if (matcherScreenWriter.find()) {
-            movie.setScreenwriter(matcherScreenWriter.group(1).replaceAll("<.*?>", "").trim());
+        Pattern patternScreenwriter = Pattern.compile("<span class='pl'>编剧</span>:(.*?)</span>");
+        Matcher matcherScreenwriter = patternScreenwriter.matcher(this.informationSourceCode);
+        if (matcherScreenwriter.find()) {
+            movie.setScreenwriter(matcherScreenwriter.group(1).replaceAll("<.*?>", "").trim());
+        }else{
+            movie.setScreenwriter("");
         }
 
         Pattern patternPerformance = Pattern.compile("<span class='pl'>主演</span>:(.*?)</span>");
@@ -80,7 +82,7 @@ public class DoubanMovieSpider {
         Pattern patternStyle = Pattern.compile("<span class=\"pl\">类型:(.*?)</span>");
         Matcher matcherStyle = patternStyle.matcher(this.informationSourceCode);
         if (matcherStyle.find()) {
-            movie.setArea(matcherStyle.group(1).replaceAll("<.*?>", "").trim());
+            movie.setStyle(matcherStyle.group(1).replaceAll("<.*?>", "").trim());
         }
 
         Pattern patternArea = Pattern.compile("<span class=\"pl\">制片国家/地区:(.*?)<br/>");
@@ -92,19 +94,19 @@ public class DoubanMovieSpider {
         Pattern patternLanguage = Pattern.compile("<span class=\"pl\">语言:</span>(.*?)<br/>");
         Matcher matcherLanguage = patternLanguage.matcher(this.informationSourceCode);
         if (matcherLanguage.find()) {
-            movie.setSynopsis(matcherLanguage.group(1).replaceAll("<.*?>", "").trim());
+            movie.setLanguage(matcherLanguage.group(1).replaceAll("<.*?>", "").trim());
         }
 
         Pattern patternReleaseTime = Pattern.compile("<span class=\"pl\">上映日期:(.*?)</span>");
         Matcher matcherReleaseTime = patternReleaseTime.matcher(this.informationSourceCode);
         if (matcherReleaseTime.find()) {
-            movie.setSynopsis(matcherReleaseTime.group(1).replaceAll("<.*?>", "").trim());
+            movie.setReleaseTime(matcherReleaseTime.group(1).replaceAll("<.*?>", "").trim());
         }
 
-        Pattern patternRunTime = Pattern.compile("<span class=\"pl\">片长:</span>.*?<span property=\"v:runtime\".*?>(.*?)分钟.*?</span>");
-        Matcher matcherRunTime = patternRunTime.matcher(this.informationSourceCode);
-        if (matcherRunTime.find()) {
-            movie.setSynopsis(matcherRunTime.group(1).replaceAll("<.*?>", "").trim());
+        Pattern patternRuntime = Pattern.compile("<span class=\"pl\">片长:</span>.*?<span property=\"v:runtime\".*?>(.*?)分钟.*?</span>");
+        Matcher matcherRuntime = patternRuntime.matcher(this.informationSourceCode);
+        if (matcherRuntime.find()) {
+            movie.setRuntime(matcherRuntime.group(1).replaceAll("<.*?>", "").trim());
         }
 
         Pattern patternSynopsis = Pattern.compile("v:summary.*?>(.*?)</span>");
