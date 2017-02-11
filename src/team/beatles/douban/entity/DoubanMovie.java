@@ -45,7 +45,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "DoubanMovie.findByJsonSrc", query = "SELECT d FROM DoubanMovie d WHERE d.jsonSrc = :jsonSrc"),
     @NamedQuery(name = "DoubanMovie.findByRating", query = "SELECT d FROM DoubanMovie d WHERE d.rating = :rating"),
     @NamedQuery(name = "DoubanMovie.findByEvaluationNumber", query = "SELECT d FROM DoubanMovie d WHERE d.evaluationNumber = :evaluationNumber"),
-    @NamedQuery(name = "DoubanMovie.findByBookOffice", query = "SELECT d FROM DoubanMovie d WHERE d.bookOffice = :bookOffice"),
     @NamedQuery(name = "DoubanMovie.findByOne", query = "SELECT d FROM DoubanMovie d WHERE d.one = :one"),
     @NamedQuery(name = "DoubanMovie.findByTwo", query = "SELECT d FROM DoubanMovie d WHERE d.two = :two"),
     @NamedQuery(name = "DoubanMovie.findByThree", query = "SELECT d FROM DoubanMovie d WHERE d.three = :three"),
@@ -106,9 +105,6 @@ public class DoubanMovie implements Serializable {
     @Basic(optional = false)
     @Column(name = "evaluation_number")
     private int evaluationNumber;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "book_office")
-    private Double bookOffice;
     @Basic(optional = false)
     @Column(name = "one")
     private double one;
@@ -294,14 +290,6 @@ public class DoubanMovie implements Serializable {
 
     public void setEvaluationNumber(int evaluationNumber) {
         this.evaluationNumber = evaluationNumber;
-    }
-
-    public Double getBookOffice() {
-        return bookOffice;
-    }
-
-    public void setBookOffice(Double bookOffice) {
-        this.bookOffice = bookOffice;
     }
 
     public double getOne() {
