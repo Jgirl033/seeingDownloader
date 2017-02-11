@@ -6,7 +6,6 @@
 package team.beatles.douban.spider;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import team.beatles.douban.entity.DoubanCollect;
@@ -32,7 +31,7 @@ public class DoubanUserSpider {
         this.uid = uid;
         String filename = this.uid + ".txt";
         System.out.println("该用户的源代码路径是：" + filename);
-        Reader ru = new Reader("doc/douban/user/", filename);
+        Reader ru = new Reader("doc/server/douban/user/", filename);
         this.sourceCode = ru.read();
     }
 
