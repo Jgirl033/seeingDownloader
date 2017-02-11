@@ -35,7 +35,7 @@ public class DoubanMovieSpider {
  
         String filename = mid + ".txt";
         System.out.println("该电影的源代码路径是：" + filename);
-        Reader r = new Reader("doc/douban/movie/", filename);
+        Reader r = new Reader("doc/server/douban/movie/", filename);
         this.sourceCode = r.read();
        
     }
