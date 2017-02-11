@@ -35,7 +35,7 @@ public class DoubanCommentSpider {
     public DoubanCommentSpider(String mid) {
         this.mid = mid;
         String filename = this.mid + ".txt";
-        Reader rc = new Reader("doc/douban/comment/", filename);
+        Reader rc = new Reader("doc/server/douban/comment/", filename);
         this.commentSourceCode = rc.read();
     }
 
