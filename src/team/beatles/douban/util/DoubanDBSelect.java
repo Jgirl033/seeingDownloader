@@ -61,7 +61,6 @@ public class DoubanDBSelect {
                 m.setAward(rs.getString("award"));
                 m.setLike(rs.getString("like"));
                 m.setJsonSrc(rs.getString("json_src"));
-                m.setBookOffice(rs.getDouble("book_office"));
                 m.setRating(rs.getDouble("rating"));
                 m.setEvaluationNumber(rs.getInt("evaluation_number"));
                 m.setOne(rs.getDouble("one"));
