@@ -9,8 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import team.beatles.mtime.entity.MtimeComment;
 import team.beatles.mtime.entity.MtimeMovie;
 import team.beatles.mtime.entity.MtimeUser;
@@ -65,12 +63,7 @@ public class MtimeDBInsert {
             System.out.println("辣鸡，saveMovie存不进去啊！" + MtimeDBInsert.class.getName());
             System.out.println("混蛋 : " + ex.toString());
         } finally {
-            try {
-                this.dbc.close();
-            } catch (SQLException ex) {
-                System.err.print(MtimeDBInsert.class.getName() + "关闭数据库连接出现异常！");
-                Logger.getLogger(MtimeDBInsert.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        
         }
     }
 
@@ -104,12 +97,7 @@ public class MtimeDBInsert {
             System.out.println("辣鸡，saveUser存不进去啊！" + MtimeDBInsert.class.getName());
             System.out.println("混蛋 : " + ex.toString());
         } finally {
-            try {
-                this.dbc.close();
-            } catch (SQLException ex) {
-                System.err.print(MtimeDBInsert.class.getName() + "关闭数据库连接出现异常！");
-                Logger.getLogger(MtimeDBInsert.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
         }
     }
 
@@ -122,11 +110,7 @@ public class MtimeDBInsert {
         try {
             String insql = "REPLACE INTO  `" + this.database + "`.`mtime_comment` (`mid` ,`uid`,`source` ,`status` ,`rating` ,`time` ,`comment`) VALUES (?,?,?,?,?,?,?);";
             PreparedStatement prest = this.dbc.prepareStatement(insql);
-            MtimeDBCheck dbcc = new MtimeDBCheck();
             for (MtimeComment comment : commentList) {
-                if (dbcc.isCommentExist(comment.getMtimeCommentPK().getUid(), String.valueOf(comment.getMtimeCommentPK().getMid()))) {
-                    continue;
-                }
                 prest.setInt(1, comment.getMtimeCommentPK().getMid());
                 prest.setString(2, comment.getMtimeCommentPK().getUid());
                 prest.setInt(3, 2);
@@ -142,12 +126,7 @@ public class MtimeDBInsert {
             System.out.println("辣鸡，saveComment存不进去啊！" + MtimeDBInsert.class.getName());
             System.out.println("混蛋 : " + ex.toString());
         } finally {
-            try {
-                this.dbc.close();
-            } catch (SQLException ex) {
-                System.err.print(MtimeDBInsert.class.getName() + "关闭数据库连接出现异常！");
-                Logger.getLogger(MtimeDBInsert.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
         }
     }
 
