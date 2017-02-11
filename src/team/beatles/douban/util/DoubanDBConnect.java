@@ -22,7 +22,7 @@ class DoubanDBConnect {
         try {
             //加载驱动，这一句也可写为：Class.forName("com.mysql.jdbc.Driver");
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            this.conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/seeing?zeroDateTimeBehavior=convertToNull", "root", "gdufsiiip");
+            this.conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/downloader?zeroDateTimeBehavior=convertToNull", "root", "gdufsiiip");
             System.out.println("连接成功！");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
             System.out.println("混蛋 : " + ex.toString());
