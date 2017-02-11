@@ -43,7 +43,7 @@ public class DoubanDBInsert {
         try {
             //执行SQL语句
             String insql;
-            insql = "REPLACE INTO  `" + this.database + "`.`douban_movie` (`mid` ,`name` ,`img_src` ,`director` ,`screenwriter` ,`performer` ,`style`,`area` ,`language`,`release_time` ,`runtime` ,`synopsis` ,`award` ,`like` ,`json_src` ,`book_office`,`rating` ,`evaluation_number` ,`one` ,`two` ,`three` ,`four`,`five`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+            insql = "REPLACE INTO  `" + this.database + "`.`douban_movie` (`mid` ,`name` ,`img_src` ,`director` ,`screenwriter` ,`performer` ,`style`,`area` ,`language`,`release_time` ,`runtime` ,`synopsis` ,`award` ,`like` ,`json_src` ,`rating` ,`evaluation_number` ,`one` ,`two` ,`three` ,`four`,`five`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
             PreparedStatement ps = this.dbc.prepareStatement(insql);
             ps.setInt(1, m.getMid());
             ps.setString(2, m.getName());
@@ -60,14 +60,13 @@ public class DoubanDBInsert {
             ps.setString(13, m.getAward());
             ps.setString(14, m.getLike());
             ps.setString(15, m.getJsonSrc());
-            ps.setDouble(16, m.getBookOffice());
-            ps.setDouble(17, m.getRating());
-            ps.setInt(18, m.getEvaluationNumber());
-            ps.setDouble(19, m.getOne());
-            ps.setDouble(20, m.getTwo());
-            ps.setDouble(21, m.getThree());
-            ps.setDouble(22, m.getFour());
-            ps.setDouble(23, m.getFive());
+            ps.setDouble(16, m.getRating());
+            ps.setInt(17, m.getEvaluationNumber());
+            ps.setDouble(18, m.getOne());
+            ps.setDouble(19, m.getTwo());
+            ps.setDouble(20, m.getThree());
+            ps.setDouble(21, m.getFour());
+            ps.setDouble(22, m.getFive());
             int result = ps.executeUpdate();
             if (result > 0) {
                 System.out.println("插入movie表成功");
@@ -76,12 +75,7 @@ public class DoubanDBInsert {
             System.out.println("Error : " + ex.toString());
             Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                this.dbc.close();
-            } catch (SQLException ex) {
-                System.err.print(DoubanDBInsert.class.getName() + "关闭数据库连接出现异常！");
-                Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
-            }
+           
         }
     }
 
@@ -117,12 +111,7 @@ public class DoubanDBInsert {
             System.out.println("辣鸡，存不进去啊");
             Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                this.dbc.close();
-            } catch (SQLException ex) {
-                System.err.print(DoubanDBInsert.class.getName() + "关闭数据库连接出现异常！");
-                Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
-            }
+           
         }
     }
 
@@ -149,12 +138,7 @@ public class DoubanDBInsert {
             System.out.println("Error : " + ex.toString());
             Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                this.dbc.close();
-            } catch (SQLException ex) {
-                System.err.print(DoubanDBInsert.class.getName() + "关闭数据库连接出现异常！");
-                Logger.getLogger(DoubanDBInsert.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
         }
     }
 }
