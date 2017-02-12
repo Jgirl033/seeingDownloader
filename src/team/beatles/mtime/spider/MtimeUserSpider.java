@@ -139,10 +139,15 @@ public class MtimeUserSpider {
      */
     public String getBirthday() {
         String birthday = "";
-        Pattern pattern = Pattern.compile("生日：(.*?)年(.*?)月(.*?)日");
-        Matcher matcher = pattern.matcher(this.profileSourceCode);
-        if (matcher.find()) {
-            birthday = matcher.group(1).trim() + "/" + matcher.group(2).trim() + "/" + matcher.group(3).trim();
+        Pattern pattern1 = Pattern.compile("生日：([0-9]{4})年(.*?)月(.*?)日");
+        Matcher matcher1 = pattern1.matcher(this.profileSourceCode);
+
+        Pattern pattern2 = Pattern.compile("生日：(.*?)月(.*?)日");
+        Matcher matcher2 = pattern2.matcher(this.profileSourceCode);
+        if (matcher1.find()) {
+            birthday = matcher1.group(1).trim() + "/" + matcher1.group(2).trim() + "/" + matcher1.group(3).trim();
+        } else if (matcher2.find()) {
+            birthday = matcher2.group(1).trim() + "/" + matcher2.group(2).trim();
         }
         return birthday;
     }
@@ -187,9 +192,11 @@ public class MtimeUserSpider {
         user.setArea(user.getArea());
         user.setBirthday(this.getBirthday());
         if (this.getBirthday() != "") {
+            System.out.println(this.uid + "的生日是：" + this.getBirthday());
             String[] birthday = this.getBirthday().split("/");
-            int month = Integer.parseInt(birthday[1]);
-            int day = Integer.parseInt(birthday[2]);
+            int len = birthday.length;
+            int month = Integer.parseInt(birthday[len - 2]);
+            int day = Integer.parseInt(birthday[len - 1]);
             user.setAge(year - Integer.parseInt(birthday[0]));
             user.setConstellation(this.getConstellation(month, day));
         } else {
