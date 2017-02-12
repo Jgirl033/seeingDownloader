@@ -27,6 +27,7 @@ import team.beatles.mtime.entity.MtimeComment;
 import team.beatles.mtime.spider.MtimeCommentSpider;
 import team.beatles.mtime.util.MtimeDBCheck;
 import team.beatles.downloader.web.WebConnect;
+import team.beatles.mtime.collector.MtimeMoviePageCollector;
 
 /**
  * 获取新上架的电影名称以及对应的时光网ID，即控制节点
@@ -99,7 +100,6 @@ public class MtimeSpiderServer implements Runnable {
                 jsonObjUser.put("uid", uid);
                 jsonArrUser.put(jsonObjUser);
             }
-
             jsonObj.put("###users###", jsonArrUser);
             pw.println(jsonObj.toString());
 
@@ -144,8 +144,8 @@ public class MtimeSpiderServer implements Runnable {
                 commentList.addAll(newCommentList);
                 commentList.addAll(hotCommentList);
 
-                MtimeDBCheck dbc = new MtimeDBCheck();
                 for (MtimeComment comment : commentList) {
+                    MtimeDBCheck dbc = new MtimeDBCheck();
                     String uid = comment.getMtimeCommentPK().getUid();
                     if (!dbc.isUserExist(uid)) {
                         uidList.add(uid);
@@ -219,7 +219,9 @@ public class MtimeSpiderServer implements Runnable {
     public static List<String> getMovieID() {
         List<String> movieIDUnfinishedList = new ArrayList<>();
         List<String> movieUnfinishedList = getMovieName();
+
         for (String movie : movieUnfinishedList) {
+            MtimeDBCheck dbc = new MtimeDBCheck();
 
             StringBuilder string = new StringBuilder();
             String[] hex = movie.split("\\\\u");
@@ -234,7 +236,6 @@ public class MtimeSpiderServer implements Runnable {
             Pattern pattern = Pattern.compile("\"movieId\":(.*?),\"movieTitle\":");
             WebConnect conn = new WebConnect(url);
             Matcher matcher = pattern.matcher(conn.downloadPage().getSourceCode());
-            MtimeDBCheck dbc = new MtimeDBCheck();
             if (matcher.find() && !dbc.isMovieExist(matcher.group(1).trim())) {
                 movieIDUnfinishedList.add(matcher.group(1).trim());
             }
@@ -244,13 +245,19 @@ public class MtimeSpiderServer implements Runnable {
 
     @Override
     public void run() {
+        
         List<String> movieIDUnfinishedList = MtimeSpiderServer.getMovieID();
+        for (String mid : movieIDUnfinishedList) {
+            MtimeMoviePageCollector dmpc = new MtimeMoviePageCollector(mid);
+            dmpc.start();
+        }
+        
         try {
             String msg = null;
             while ((msg = br.readLine()) != null) {
                 if (msg.contains("###Hello###".subSequence(0, 10))) {
                     System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "注册上线！");
-                    pw.println("success");
+                    pw.println("###success###");
                 } else if (msg.contains("###Bye###".subSequence(0, 8))) {
                     //爬行节点请求退出
                     System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "退出成功！");
@@ -268,6 +275,7 @@ public class MtimeSpiderServer implements Runnable {
                 } else if (msg.contains("###users###".subSequence(0, 10))) {
                     System.out.println(socket.getInetAddress() + ":" + socket.getPort() + "传来新用户的源代码！");
                     this.receiveUser(msg);
+                    pw.println("###user done###");
                 }
             }
         } catch (IOException e) {
