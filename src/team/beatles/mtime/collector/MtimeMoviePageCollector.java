@@ -40,7 +40,7 @@ public class MtimeMoviePageCollector {
         WebConnect conn = new WebConnect(url);
         String sourceCode = conn.downloadPage().getSourceCode();
         String filename = this.mid + ".txt";
-        Writer w = new Writer("doc/client/mtime/movie/information/", filename);
+        Writer w = new Writer("doc/server/mtime/movie/information/", filename);
         w.write(sourceCode);
     }
 
@@ -53,7 +53,7 @@ public class MtimeMoviePageCollector {
         WebConnect sourceCode = new WebConnect(scoreUrl);
         String scoreSourceCode = sourceCode.downloadPage().getSourceCode();
         String filename = this.mid + ".txt";
-        Writer w = new Writer("doc/client/mtime/movie/score/", filename);
+        Writer w = new Writer("doc/server/mtime/movie/score/", filename);
         w.write(scoreSourceCode);
     }
 
