@@ -14,14 +14,19 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import team.beatles.downloader.file.Reader;
+import team.beatles.downloader.server.MtimeSpiderServer;
 import team.beatles.mtime.collector.MtimeCommentPageCollector;
+import team.beatles.mtime.collector.MtimeMoviePageCollector;
 import team.beatles.mtime.collector.MtimeUserPageCollector;
+import team.beatles.mtime.entity.MtimeComment;
+import team.beatles.mtime.spider.MtimeCommentSpider;
 
 /**
  * 网页源代码程序下载客户端，即爬行节点
@@ -75,24 +80,40 @@ public class MtimeSpiderClient {
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonArrUser = new JSONArray();
 
-        MtimeUserPageCollector mupa = new MtimeUserPageCollector();
-        mupa.start(uidList);
+        
 
         try {
-            for (String uid : uidList) {
+            for (int i = 0; i < uidList.size(); i += 99) {
+                
+                int j = i + 99;
+                if (j > uidList.size()) {
+                    j = uidList.size();
+                }
+                
+                List<String> uidSubList = uidList.subList(i, j);
+                ArrayList<String> uidSubArrayList = new ArrayList<>();
+                for(String uid : uidSubList){
+                    uidSubArrayList.add(uid);
+                }
+                
+                MtimeUserPageCollector mupa = new MtimeUserPageCollector();
+                mupa.start(uidSubArrayList);
+                
+                for (String uid : uidSubArrayList) {
 
-                Reader rp = new Reader("doc/client/mtime/user/profile/", uid + ".txt");
-                Reader rc = new Reader("doc/client/mtime/user/comment/", uid + ".txt");
+                    Reader rp = new Reader("doc/client/mtime/user/profile/", uid + ".txt");
+                    Reader rc = new Reader("doc/client/mtime/user/comment/", uid + ".txt");
 
-                JSONObject jsonObjUser = new JSONObject();
-                jsonObjUser.put("uid", uid);
-                jsonObjUser.put("profile", rp.read());
-                jsonObjUser.put("comment", rc.read());
-                jsonArrUser.put(jsonObjUser);
+                    JSONObject jsonObjUser = new JSONObject();
+                    jsonObjUser.put("uid", uid);
+                    jsonObjUser.put("profile", rp.read());
+                    jsonObjUser.put("comment", rc.read());
+                    jsonArrUser.put(jsonObjUser);
 
+                }
+                jsonObj.put("###users###", jsonArrUser);
+                pw.println(jsonObj.toString());
             }
-            jsonObj.put("###users###", jsonArrUser);
-            pw.println(jsonObj.toString());
 
         } catch (JSONException ex) {
             Logger.getLogger(MtimeSpiderClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -207,4 +228,36 @@ public class MtimeSpiderClient {
         client.close();//断开客户端与服务器的连接
     }
 
+    public static void main(String[] args) {
+
+        try {
+            MtimeSpiderClient socket = new MtimeSpiderClient("127.0.0.1", "9191");
+            ArrayList<String> uidList = new ArrayList<>();
+
+            List<String> movieIDUnfinishedList = MtimeSpiderServer.getMovieID();
+            for (String mid : movieIDUnfinishedList) {
+//                MtimeMoviePageCollector dmpc = new MtimeMoviePageCollector(mid);
+//                dmpc.start();
+
+                MtimeCommentSpider mcsh = new MtimeCommentSpider(mid, "h");
+                MtimeCommentSpider mcsn = new MtimeCommentSpider(mid, "n");
+
+                ArrayList<MtimeComment> hotCommentList = mcsh.getComment();
+                ArrayList<MtimeComment> newCommentList = mcsn.getComment();
+                ArrayList<MtimeComment> commentList = new ArrayList<>();
+                commentList.addAll(newCommentList);
+                commentList.addAll(hotCommentList);
+
+                //3.从评论中获取用户ID
+                for (MtimeComment comment : commentList) {
+                    uidList.add(comment.getMtimeCommentPK().getUid());
+                }
+
+            }
+            socket.sendUser(uidList);
+
+        } catch (IOException ex) {
+            Logger.getLogger(MtimeSpiderClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
