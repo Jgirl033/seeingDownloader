@@ -6,6 +6,7 @@
 package team.beatles.mtime.collector;
 
 import java.util.ArrayList;
+import org.openqa.selenium.TimeoutException;
 import team.beatles.downloader.file.Writer;
 import team.beatles.downloader.web.WebConnect;
 import static team.beatles.constant.Constant.mtimeDR;
@@ -31,7 +32,7 @@ public class MtimeUserPageCollector {
      * @param uidList 用户ID列表
      */
     public void start(ArrayList<String> uidList) {
-        
+
         for (String uid : uidList) {
             System.out.println(MtimeUserPageCollector.class.getName() + "开始爬取用户" + uid + "的comment源代码");
             String userUrl = "http://sandbox.my.mtime.com/Service/callback.mc?Ajax_CallBack=true&Ajax_CallBackType=Mtime.MemberCenter.Pages.CallbackService&Ajax_CallBackMethod=RemoteLoad&Ajax_CrossDomain=1&Ajax_RequestUrl=http://my.mtime.com/" + uid + "/&Ajax_CallBackArgument0=t&Ajax_CallBackArgument1=" + uid + "/?$2";
@@ -51,7 +52,15 @@ public class MtimeUserPageCollector {
 
             System.out.println(MtimeUserPageCollector.class.getName() + "开始爬取用户" + uid + "的profile源代码");
             String profileUrl = "http://sandbox.my.mtime.com/Service/callback.mc?Ajax_CallBack=true&Ajax_CallBackType=Mtime.MemberCenter.Pages.CallbackService&Ajax_CallBackMethod=RemoteLoad&Ajax_CrossDomain=1&Ajax_RequestUrl=http://my.mtime.com/" + uid + "/profile/&Ajax_CallBackArgument0=t&Ajax_CallBackArgument1=" + uid + "/profile/?$3";
-            mtimeDR.get(profileUrl);
+            while (true) {
+                try {
+                    mtimeDR.get(profileUrl);
+                    break;
+                } catch (TimeoutException e) {
+                    System.out.println(e.toString());
+                }
+            }
+
             String profileSourceCode = mtimeDR.getPageSource();
             while (true) {
                 if (profileSourceCode.contains("无法访问此网站".subSequence(0, 6))) {
