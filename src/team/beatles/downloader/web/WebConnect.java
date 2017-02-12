@@ -7,8 +7,8 @@ package team.beatles.downloader.web;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * 网络连接类
@@ -53,11 +53,15 @@ public class WebConnect {
         WebPage page = new WebPage();
         System.out.println("爬取的链接为" + this.url);
         try {
+            System.out.println("❀❀❀❀❀网络连接开启❀❀❀❀❀");
             URL realURL = new URL(this.url);
-            URLConnection conn = realURL.openConnection();
-            conn.connect();
+            HttpURLConnection urlCon = (HttpURLConnection) realURL.openConnection();
+            urlCon.setConnectTimeout(60000);
+            urlCon.setReadTimeout(60000);
+            urlCon.connect();
+            System.out.println("❀❀❀❀❀网络连接结束❀❀❀❀❀");
 
-            in = new BufferedReader(new InputStreamReader(conn.getInputStream(), this.decodeType));
+            in = new BufferedReader(new InputStreamReader(urlCon.getInputStream(), this.decodeType));
             String line;
             while ((line = in.readLine()) != null) {
                 webpage = webpage + line;
