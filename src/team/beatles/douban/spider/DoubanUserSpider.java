@@ -80,7 +80,7 @@ public class DoubanUserSpider {
             content = matcher1.group(1).trim();
         }
 
-        Pattern pattern2 = Pattern.compile("<a href=\"(.*?)\" title=\"(.*?)\" target=\"_blank\">");
+        Pattern pattern2 = Pattern.compile("<a href=\"(https://movie.douban.com/subject/.*?/)\" title=\"(.*?)\" target=\"_blank\">");
         Matcher matcher2 = pattern2.matcher(content);
         while (matcher2.find()) {
             switch (count) {
@@ -142,7 +142,7 @@ public class DoubanUserSpider {
             content = matcher1.group(1).trim();
         }
 
-        Pattern pattern2 = Pattern.compile("<a href=\"(.*?)\" title=\"(.*?)\" target=\"_blank\">");
+        Pattern pattern2 = Pattern.compile("<a href=\"(https://movie.douban.com/subject/.*?/)\" title=\"(.*?)\" target=\"_blank\">");
         Matcher matcher2 = pattern2.matcher(content);
         while (matcher2.find()) {
             switch (count) {
