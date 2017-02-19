@@ -5,6 +5,7 @@
  */
 package team.beatles.douban.spider;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,15 +30,16 @@ public class DoubanMovieSpider {
      *
      * @param mid 豆瓣电影唯一ID
      */
-    public DoubanMovieSpider(String mid) {
+    public DoubanMovieSpider(String mid) throws UnsupportedEncodingException {
         this.movie = new DoubanMovie();
         this.mid = mid;
 
         String filename = mid + ".txt";
         System.out.println("该电影的源代码路径是：" + filename);
         Reader r = new Reader("doc/server/douban/movie/", filename);
-        this.informationSourceCode = r.read();
 
+        String str = r.read();
+        this.informationSourceCode = str;
     }
 
     /**
@@ -67,7 +69,7 @@ public class DoubanMovieSpider {
         Matcher matcherScreenwriter = patternScreenwriter.matcher(this.informationSourceCode);
         if (matcherScreenwriter.find()) {
             movie.setScreenwriter(matcherScreenwriter.group(1).replaceAll("<.*?>", "").trim());
-        }else{
+        } else {
             movie.setScreenwriter("");
         }
 
@@ -197,10 +199,10 @@ public class DoubanMovieSpider {
         String content;
         if (matcherContent.find()) {
             content = matcherContent.group(1);
-        }else{
+        } else {
             content = "";
         }
-        
+
         Pattern pattern = Pattern.compile("<ul class=\"award\">.*?<li>(.*?)</li>.*?<li>(.*?)</li>.*?</ul>");
         Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
